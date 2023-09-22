@@ -14,30 +14,42 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [mostVoted, setMostVoted] = useState(0)
 
-  const vote = () => {
+  const handleVote = () => {
     const newVotes = [...votes]
     newVotes[selected] += 1
     console.log('Votes:', newVotes)
     setVotes(newVotes)
+
+    // Since state updates are asyncronous it's necessary to add one to the votes of the selected anecdote before the comparison
+    if (selected !== mostVoted && votes[selected]+1 > votes[mostVoted]) {
+      console.log('New most voted: ', selected)
+      setMostVoted(selected)
+    }
   }
 
-  const newSelected = () => {
+  const handleNewSelection = () => {
     const newSelected = Math.round(Math.random()*(anecdotes.length-1))
     console.log('\nNew random index selected', newSelected)
     setSelected(newSelected)
   }
 
-  return (
-    <div>
-      {anecdotes[selected]}<br/>
-      has {votes[selected]} votes
+    return (
       <div>
-        <button onClick={vote}>vote</button>
-        <button onClick={newSelected}>next anecdote</button>
+        <h1>Anecdote of the day</h1>
+        {anecdotes[selected]}<br/>
+        has {votes[selected]} votes
+        <div>
+          <button onClick={handleVote}>vote</button>
+          <button onClick={handleNewSelection}>next anecdote</button>
+        </div>
+
+        <h1>Anecdote with most votes</h1>
+        {anecdotes[mostVoted]}<br/>
+        has {votes[mostVoted]} votes
       </div>
-    </div>
-  )
+    )
 }
 
 export default App
