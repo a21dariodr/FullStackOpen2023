@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
 const StatisticLine = ({ text, value }) => {
-  if (text !== 'positive') return <>{text} {value}<br/></>
-  else return <>{text} {value} %<br/></>
+  if (text !== 'positive') return <tr><td>{text}</td><td>{value}</td></tr>
+  else return <tr><td>{text}</td><td>{value} %</td></tr>
 }
 
 // Destructuring the props object
@@ -22,14 +22,16 @@ const Statistics = ({ feedback }) => {
     return (
       <>
         <h1>statistics</h1>
-        <div>
-          <StatisticLine text='good' value={good} />
-          <StatisticLine text='neutral' value={neutral} />
-          <StatisticLine text='bad' value={bad} />
-          <StatisticLine text='all' value={all} />
-          <StatisticLine text='average' value={average} />
-          <StatisticLine text='positive' value={positive} />
-        </div>
+        <table>
+          <tbody>
+            <StatisticLine text='good' value={good} />
+            <StatisticLine text='neutral' value={neutral} />
+            <StatisticLine text='bad' value={bad} />
+            <StatisticLine text='all' value={all} />
+            <StatisticLine text='average' value={average} />
+            <StatisticLine text='positive' value={positive} />
+          </tbody>
+        </table>
       </>
     )
   } else {
@@ -50,7 +52,7 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  console.log('Rendering...')
+  console.log('\nRendering...')
   console.log('good', good)
   console.log('neutral', neutral)
   console.log('bad', bad)
