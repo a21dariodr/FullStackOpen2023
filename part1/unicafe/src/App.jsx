@@ -6,27 +6,35 @@ const Statistics = ({ feedback }) => {
   const [good, neutral, bad] = feedback
 
   const all = good + neutral + bad
-  // Ternary operator to avoid showing NaN when all is cero
-  const average = (all === 0) ? 0 : ((good*1 + neutral*0 + bad*-1) / all)
-  const positive = (all === 0) ? 0 : ((good / all) * 100)
+  const average = (good*1 + neutral*0 + bad*-1) / all
+  const positive = (good / all) * 100
 
   console.log('all', all)
   console.log('average', average)
   console.log('positive', positive)
 
-  return (
-    <>
-      <h1>statistics</h1>
-      <div>
-        good {good}<br/>
-        neutral {neutral}<br/>
-        bad {bad}<br/>
-        all {all}<br/>
-        average {average}<br/>
-        positive {positive} %<br/>
-      </div>
-    </>
-  )
+  if (all > 0) {
+    return (
+      <>
+        <h1>statistics</h1>
+        <div>
+          good {good}<br/>
+          neutral {neutral}<br/>
+          bad {bad}<br/>
+          all {all}<br/>
+          average {average}<br/>
+          positive {positive} %<br/>
+        </div>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </>
+    )
+  }
 }
 
 const App = () => {
