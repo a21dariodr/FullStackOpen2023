@@ -52,6 +52,8 @@ const App = () => {
     ]
   }
 
+  console.log(course)
+
   return <Course course={course} />
 }
 
