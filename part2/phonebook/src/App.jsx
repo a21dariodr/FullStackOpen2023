@@ -17,6 +17,7 @@ const App = () => {
     console.log('Effect hook for fetching data..')
     dbService.getAllPersons()
       .then( persons => setPersons(persons))
+      .catch( error => console.log(error.message))
   }, [])
 
   const handleNewPerson = (e) => {
@@ -29,16 +30,24 @@ const App = () => {
       const newPerson = {
         name: newName,
         number: newNumber,
-        id: persons.length+1
+        id: persons[persons.length-1].id + 1
       }
-      console.log('New person added: ', newPerson)
+      
       dbService.createPerson(newPerson)
         .then( person => {
           setPersons(persons.concat(person))
           setNewName('')
           setNewNumber('')
         })
+        .catch( error => console.log(error.message))
     }
+  }
+
+  const handleDeletePerson = (personId, personName) => {
+    if (window.confirm(`Are you sure to delete the contact ${personName}?`))
+      dbService.deletePerson(personId)
+        .then( () => setPersons(persons.filter( person => person.id != personId )))
+        .catch( error => console.log(error.message))
   }
 
   /* 
@@ -68,7 +77,7 @@ const App = () => {
         }}
       />
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} deleteHandler={handleDeletePerson} />
     </div>
   )
 }
