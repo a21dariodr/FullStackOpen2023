@@ -20,13 +20,20 @@ const App = () => {
       .catch( error => console.log(error.message))
   }, [])
 
-  const handleNewPerson = (e) => {
+  const handleNewOrEditPerson = (e) => {
     e.preventDefault()
 
     const repeatedPerson = persons.find( person => person.name === newName )
+    const repeatedNumber = repeatedPerson?.number === newNumber
 
-    if (repeatedPerson) alert(`${repeatedPerson.name} is already added to the phonebook`)
-    else {
+    if (repeatedPerson && repeatedNumber) alert(`${repeatedPerson.name} is already added to the phonebook with the same phone number`)
+    else if (repeatedPerson && !repeatedNumber) {
+      if (window.confirm(`${repeatedPerson.name} already exists in the phonebook, are you sure to replace the phone number?`)) {
+        dbService.editPerson(repeatedPerson.id, {...repeatedPerson, number: newNumber})
+          .then( updatedPerson => setPersons(persons.map( person => person.id === updatedPerson.id ? updatedPerson : person )))
+          .catch( error => console.log(error.message))
+      }
+    } else {
       const newPerson = {
         name: newName,
         number: newNumber,
@@ -73,7 +80,7 @@ const App = () => {
         handlers={{
           handleNewName: (e) => setNewName(e.target.value),
           handleNewNumber: (e) => setNewNumber(e.target.value),
-          handleSubmit: handleNewPerson
+          handleSubmit: handleNewOrEditPerson
         }}
       />
       <h2>Numbers</h2>
