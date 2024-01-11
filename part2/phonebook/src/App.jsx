@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
+import dbService from './services/db'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -14,12 +15,8 @@ const App = () => {
   // Hook for fetching data from server with Axios
   useEffect(() => {
     console.log('Effect hook for fetching data..')
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response => {
-        console.log('Data fetched succesfully', response.data);
-        setPersons(response.data)
-      }))
+    dbService.getAllPersons()
+      .then( persons => setPersons(persons))
   }, [])
 
   const handleNewPerson = (e) => {
@@ -35,9 +32,12 @@ const App = () => {
         id: persons.length+1
       }
       console.log('New person added: ', newPerson)
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNumber('')
+      dbService.createPerson(newPerson)
+        .then( person => {
+          setPersons(persons.concat(person))
+          setNewName('')
+          setNewNumber('')
+        })
     }
   }
 
