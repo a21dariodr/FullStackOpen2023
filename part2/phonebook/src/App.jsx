@@ -19,7 +19,13 @@ const App = () => {
     console.log('Effect hook for fetching data..')
     dbService.getAllPersons()
       .then( persons => setPersons(persons))
-      .catch( error => console.log(error.message))
+      .catch( error => {
+        console.log(error.message)
+        setMessage('Error obtaining contacts from database')
+            setTimeout( () => {
+              setMessage(null)
+            }, 5000)
+      })
   }, [])
 
   const handleNewOrEditPerson = (e) => {
@@ -40,7 +46,13 @@ const App = () => {
               setMessage(null)
             }, 5000)
           })
-          .catch( error => console.log(error.message))
+          .catch( error => {
+            console.log(error.message)
+            setMessage('An error ocurred when updating the contact info')
+            setTimeout( () => {
+              setMessage(null)
+            }, 5000)
+          })
       }
     } else {
       const newPerson = {
@@ -60,7 +72,13 @@ const App = () => {
             setMessage(null)
           }, 5000)
         })
-        .catch( error => console.log(error.message))
+        .catch( error => {
+          console.log(error.message)
+          setMessage('An error ocurred when adding the new contact')
+            setTimeout( () => {
+              setMessage(null)
+            }, 5000)
+        })
     }
   }
 
@@ -68,7 +86,13 @@ const App = () => {
     if (window.confirm(`Are you sure to delete the contact ${personName}?`))
       dbService.deletePerson(personId)
         .then( () => setPersons(persons.filter( person => person.id != personId )))
-        .catch( error => console.log(error.message))
+        .catch( error => {
+          console.log(error.message)
+          setMessage('An error ocurred when deleting the contact')
+            setTimeout( () => {
+              setMessage(null)
+            }, 5000)
+        })
   }
 
   /* 
