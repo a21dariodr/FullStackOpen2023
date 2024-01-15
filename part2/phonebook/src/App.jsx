@@ -5,12 +5,14 @@ import dbService from './services/db'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(null)
 
   // Hook for fetching data from server with Axios
   useEffect(() => {
@@ -30,7 +32,14 @@ const App = () => {
     else if (repeatedPerson && !repeatedNumber) {
       if (window.confirm(`${repeatedPerson.name} already exists in the phonebook, are you sure to replace the phone number?`)) {
         dbService.editPerson(repeatedPerson.id, {...repeatedPerson, number: newNumber})
-          .then( updatedPerson => setPersons(persons.map( person => person.id === updatedPerson.id ? updatedPerson : person )))
+          .then( updatedPerson => {
+            setPersons(persons.map( person => person.id === updatedPerson.id ? updatedPerson : person ))
+
+            setMessage('Phone number updated succesfully')
+            setTimeout( () => {
+              setMessage(null)
+            }, 5000)
+          })
           .catch( error => console.log(error.message))
       }
     } else {
@@ -45,6 +54,11 @@ const App = () => {
           setPersons(persons.concat(person))
           setNewName('')
           setNewNumber('')
+
+          setMessage('New contact succesfully added')
+          setTimeout( () => {
+            setMessage(null)
+          }, 5000)
         })
         .catch( error => console.log(error.message))
     }
@@ -71,6 +85,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <Filter filter={filter} handleNewFilter={(e) => setFilter(e.target.value)} />
+
       <h2>Add a new contact</h2>
       <PersonForm 
         states={{
@@ -83,6 +98,8 @@ const App = () => {
           handleSubmit: handleNewOrEditPerson
         }}
       />
+      <Notification message={message} />
+
       <h2>Numbers</h2>
       <Persons persons={filteredPersons} deleteHandler={handleDeletePerson} />
     </div>
