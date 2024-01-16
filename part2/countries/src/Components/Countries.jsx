@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import CountryInfo from "./CountryInfo"
 
 const Countries = ({ countries, showCountryHandler }) => {
     console.log(countries)
@@ -16,7 +17,7 @@ const Countries = ({ countries, showCountryHandler }) => {
             </>
         )
     } else if (countries.length === 1) {
-        showCountryHandler(countries[0])
+        return <CountryInfo country={countries[0]} />
     }
         
 }
