@@ -1,3 +1,5 @@
+import WeatherInfo from "./WeatherInfo"
+
 /* eslint-disable react/prop-types */
 const CountryInfo = ({ country }) => {
     if (!country) return null
@@ -14,6 +16,8 @@ const CountryInfo = ({ country }) => {
             </ul>
 
             <img src={country.flags.png} width={200} alt="flag" />
+
+            <WeatherInfo country={country} />
         </>
     )
 }
