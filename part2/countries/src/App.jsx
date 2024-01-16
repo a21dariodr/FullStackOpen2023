@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Countries from './Components/Countries'
+import CountryInfo from './Components/CountryInfo'
 
 function App() {
   const [search, setSearch] = useState('')
   const [countries, setCountries] = useState([])
+  const [country, setCountry] = useState(null)
   const [filteredCountries, setFilteredCountries] = useState([])
 
   useEffect( () => {
@@ -16,6 +18,7 @@ function App() {
 
   const searchHandler = event => {
     setSearch(event.target.value)
+    setCountry(null)
 
     if (event.target.value) {
       const textSearch = event.target.value.toLowerCase()
@@ -24,7 +27,10 @@ function App() {
     } else {
       setFilteredCountries([])
     }
+  }
 
+  const showCountryHandler = newCountry => {
+    setCountry(newCountry)
   }
 
   return (
@@ -32,7 +38,8 @@ function App() {
       <h1>Countries info</h1>
       find countries &nbsp;
       <input type='text' value={search} onChange={searchHandler} />
-      <Countries countries={filteredCountries} />
+      <Countries countries={filteredCountries} showCountryHandler={showCountryHandler} />
+      <CountryInfo country={country} />
     </>
   )
 }
