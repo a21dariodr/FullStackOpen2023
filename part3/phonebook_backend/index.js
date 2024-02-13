@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     { 
       "id": 1,
@@ -38,6 +40,23 @@ app.get('/api/persons/:id', (req, res) => {
 app.get('/info', (req, res) => {
     const now = new Date();
     res.send(`Phonebook has info for ${persons.length} people<br/><br/>${now.toString()}`)
+})
+
+app.post('/api/persons', (req, res) => {
+    const id = Math.floor(Math.random() * 100000000000000)
+    const person = req.body
+
+    if (!person.name) return res.status(400).send('Missing person name')
+    if (!person.number) return res.status(400).send('Missing person number')
+
+    const newPerson = {
+        id,
+        "name": person.name,
+        "number": person.number
+    }
+    persons.push(newPerson)
+
+    res.json(newPerson)
 })
 
 app.delete('/api/persons/:id', (req, res) => {

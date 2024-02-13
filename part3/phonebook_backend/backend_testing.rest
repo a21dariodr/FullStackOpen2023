@@ -14,6 +14,25 @@ GET http://localhost:3001/info
 
 ###
 
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Pepe Pérez",
+    "number": 984826732
+}
+
+###
+
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Pepe Pérez"
+}
+
+###
+
 DELETE http://localhost:3001/api/persons/4
 
 ###
