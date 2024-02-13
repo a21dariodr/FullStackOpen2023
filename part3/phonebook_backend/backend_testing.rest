@@ -19,7 +19,7 @@ content-type: application/json
 
 {
     "name": "Pepe Pérez",
-    "number": 984826732
+    "number": "984826732"
 }
 
 ###
@@ -38,11 +38,9 @@ content-type: application/json
 
 {
     "name": "Arto Hellas",
-    "number": 984826732
+    "number": "984826732"
 }
 
 ###
 
 DELETE http://localhost:3001/api/persons/4
-
-###
