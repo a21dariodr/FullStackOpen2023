@@ -32,8 +32,8 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
-    const person = persons.filter(p => p.id === id)
-    if (person.length > 0) res.json(person)
+    const person = persons.find(p => p.id === id)
+    if (person) res.json(person)
     else res.status(404).send('Person not found!')
 })
 
@@ -46,8 +46,11 @@ app.post('/api/persons', (req, res) => {
     const id = Math.floor(Math.random() * 100000000000000)
     const person = req.body
 
-    if (!person.name) return res.status(400).send('Missing person name')
-    if (!person.number) return res.status(400).send('Missing person number')
+    if (!person.name) return res.status(400).json({error: 'Missing person name!'})
+    if (!person.number) return res.status(400).json({error: 'Missing person number!'})
+
+    let repeatedPerson = persons.find(p => p.name === person.name)
+    if (repeatedPerson) return res.status(400).json({error: 'Person name must be unique!'})
 
     const newPerson = {
         id,
