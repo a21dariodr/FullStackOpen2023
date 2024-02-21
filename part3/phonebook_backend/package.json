@@ -10,7 +10,9 @@
     "build:frontend": "rm -rf dist && cd ../phonebook_frontend && npm run build && cp -r dist ../phonebook_backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:frontend && npm run deploy",
-    "logs": "fly logs"
+    "logs": "fly logs",
+    "debug": "node --inspect index.js",
+    "debug:dev": "nodemon --inspect index.js"
   },
   "author": "",
   "license": "ISC",
