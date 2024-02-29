@@ -5,8 +5,8 @@ const cors = require('cors')
 const Person = require('./mongo_models/person')
 const app = express()
 
-app.use(express.json())
 app.use(express.static('dist'))
+app.use(express.json())
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postdata'))
 
@@ -33,7 +33,7 @@ app.get('/info', (req, res) => {
     res.send(`Phonebook has info for ${persons.length} people<br/><br/>${now.toString()}`)
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const { name, number } = req.body
 
     if (!name) return res.status(400).json({error: 'Missing person name!'})
@@ -47,16 +47,36 @@ app.post('/api/persons', (req, res) => {
         .then( savedPerson => {
             res.json(savedPerson)
         })
+        .catch( error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     
     Person.deleteOne({ id })
         .then( () => {
             res.status(204).end()
         })
+        .catch( error => next(error))
 })
+
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'Unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+    console.log(error)
+
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'Incorrect id format' })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
