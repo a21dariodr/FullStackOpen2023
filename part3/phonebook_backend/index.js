@@ -39,14 +39,23 @@ app.post('/api/persons', (req, res, next) => {
     if (!name) return res.status(400).json({error: 'Missing person name!'})
     if (!number) return res.status(400).json({error: 'Missing person number!'})
 
-    // if (repeatedPerson) return res.status(400).json({error: 'Person name must be unique!'})
-
-    const newPerson = new Person({ name, number })
+    const person = new Person({ name, number })
     
-    newPerson.save()
-        .then( savedPerson => {
-            res.json(savedPerson)
+    person.save()
+        .then( newPerson => {
+            res.json(newPerson)
         })
+        .catch( error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id
+    const { name, number } = req.body
+
+    if (!number) return res.status(400).json({error: 'Missing person number!'})
+
+    Person.findByIdAndUpdate(id, { name, number }, { new: true, runValidators: true, context: 'query' })
+        .then( updatedPerson => res.json(updatedPerson))
         .catch( error => next(error))
 })
 
