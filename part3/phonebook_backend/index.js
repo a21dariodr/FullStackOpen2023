@@ -50,9 +50,12 @@ app.post('/api/persons', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    let persons = persons.filter(p => p.id !== id)
-    res.status(204).end()
+    const id = req.params.id
+    
+    Person.deleteOne({ id })
+        .then( () => {
+            res.status(204).end()
+        })
 })
 
 const PORT = process.env.PORT
