@@ -34,23 +34,19 @@ app.get('/info', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-    const id = Math.floor(Math.random() * 100000000000000)
-    const person = req.body
+    const { name, number } = req.body
 
-    if (!person.name) return res.status(400).json({error: 'Missing person name!'})
-    if (!person.number) return res.status(400).json({error: 'Missing person number!'})
+    if (!name) return res.status(400).json({error: 'Missing person name!'})
+    if (!number) return res.status(400).json({error: 'Missing person number!'})
 
-    let repeatedPerson = persons.find(p => p.name === person.name)
-    if (repeatedPerson) return res.status(400).json({error: 'Person name must be unique!'})
+    // if (repeatedPerson) return res.status(400).json({error: 'Person name must be unique!'})
 
-    const newPerson = {
-        id,
-        "name": person.name,
-        "number": person.number
-    }
-    persons.push(newPerson)
-
-    res.json(newPerson)
+    const newPerson = new Person({ name, number })
+    
+    newPerson.save()
+        .then( savedPerson => {
+            res.json(savedPerson)
+        })
 })
 
 app.delete('/api/persons/:id', (req, res) => {

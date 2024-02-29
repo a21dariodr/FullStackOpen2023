@@ -73,8 +73,8 @@ const App = () => {
           }, 5000)
         })
         .catch( error => {
-          console.log(error.message)
-          setMessage('An error ocurred when adding the new contact')
+          console.log(error)
+          setMessage(`An error ocurred when adding the new contact: ${error.response.data.error}`)
             setTimeout( () => {
               setMessage(null)
             }, 5000)
