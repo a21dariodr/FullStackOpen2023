@@ -12,25 +12,34 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :p
 
 morgan.token('postdata', (req, res) => (req.method === 'POST') ? JSON.stringify(req.body) : '')
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
   Person.find({})
-    .then(people => {
+    .then( people => {
       if (people) res.json(people)
       else res.status(404).end()
     })
-    .catch(error => response.status(500).send(error))
+    .catch( error => next(error) )
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(p => p.id === id)
-    if (person) res.json(person)
-    else res.status(404).send('Person not found!')
+app.get('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id
+    
+    Person.findById(id)
+        .then( person => {
+            if (person) res.json(person)
+            else res.status(404).send('Person not found!')
+        })
+        .catch( error => next(error) )    
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
     const now = new Date();
-    res.send(`Phonebook has info for ${persons.length} people<br/><br/>${now.toString()}`)
+
+    Person.countDocuments()
+        .then(count => {
+            res.send(`Phonebook has info for ${count} people<br/><br/>${now.toString()}`)
+        })
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res, next) => {
