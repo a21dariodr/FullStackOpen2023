@@ -11,6 +11,7 @@
     "deploy": "fly deploy",
     "deploy:full": "npm run build:frontend && npm run deploy",
     "deploy:logs": "npm run deploy:full && npm run logs",
+    "lint": "eslint .",
     "logs": "fly logs",
     "debug": "node --inspect index.js",
     "debug:dev": "nodemon --inspect index.js"
@@ -26,6 +27,8 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.2",
+    "@stylistic/eslint-plugin-js": "^1.6.3",
+    "eslint": "^8.57.0",
     "nodemon": "^3.0.3"
   }
 }

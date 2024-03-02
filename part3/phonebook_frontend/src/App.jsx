@@ -37,7 +37,7 @@ const App = () => {
     if (repeatedPerson && repeatedNumber) alert(`${repeatedPerson.name} is already added to the phonebook with the same phone number`)
     else if (repeatedPerson && !repeatedNumber) {
       if (window.confirm(`${repeatedPerson.name} already exists in the phonebook, are you sure to replace the phone number?`)) {
-        dbService.editPerson(repeatedPerson.id, {...repeatedPerson, number: newNumber})
+        dbService.editPerson(repeatedPerson.id, { ...repeatedPerson, number: newNumber })
           .then( updatedPerson => {
             setPersons(persons.map( person => person.id === updatedPerson.id ? updatedPerson : person ))
 
@@ -60,7 +60,7 @@ const App = () => {
         number: newNumber,
         id: persons[persons.length-1].id + 1
       }
-      
+
       dbService.createPerson(newPerson)
         .then( person => {
           setPersons(persons.concat(person))
@@ -85,7 +85,7 @@ const App = () => {
   const handleDeletePerson = (personId, personName) => {
     if (window.confirm(`Are you sure to delete the contact ${personName}?`))
       dbService.deletePerson(personId)
-        .then( () => setPersons(persons.filter( person => person.id != personId )))
+        .then( () => setPersons(persons.filter( person => person.id !== personId )))
         .catch( error => {
           console.log(error.message)
           setMessage('An error ocurred when deleting the contact')
@@ -95,7 +95,7 @@ const App = () => {
         })
   }
 
-  /* 
+  /*
    * The list of persons is only filtered if the filter input field is not empty
    * Filtering finds persons whose name contains the filter input
    * The toLowerCase() method makes the filtering case-insensitive
@@ -104,14 +104,14 @@ const App = () => {
     ? persons.filter( person => person.name.toLowerCase().includes(filter.toLowerCase()) )
     : persons
   console.log('Filtered persons: ', filteredPersons)
-  
+
   return (
     <div>
       <h1>Phonebook</h1>
       <Filter filter={filter} handleNewFilter={(e) => setFilter(e.target.value)} />
 
       <h2>Add a new contact</h2>
-      <PersonForm 
+      <PersonForm
         states={{
           newName: newName,
           newNumber: newNumber
