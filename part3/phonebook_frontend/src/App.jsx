@@ -47,8 +47,8 @@ const App = () => {
             }, 5000)
           })
           .catch( error => {
-            console.log(error.message)
-            setMessage('An error ocurred when updating the contact info')
+            console.log(error)
+            setMessage(`An error ocurred when updating the contact info: ${error.response.data.error}`)
             setTimeout( () => {
               setMessage(null)
             }, 5000)

@@ -10,7 +10,11 @@ mongoose.connect(url)
     .catch( error => console.log('Error connecting to MongoDB Atlas: ', error.message) )
 
 const personSchema = new Schema({
-    name: String,
+    name: {
+      type: String,
+      minLength: 3,
+      required: true
+    },
     number: String
 })
 
