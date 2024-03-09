@@ -21,15 +21,33 @@ const mostBlogs = blogs => {
     const sortedAuthorsByBlogsCount = _.chain(blogs)
         .countBy('author')
         .map((value, key) => ({ author: key, blogs: value }))
-        .sortBy('blogs')
+        .orderBy('blogs', 'desc')
         .value()
     
-    return sortedAuthorsByBlogsCount[sortedAuthorsByBlogsCount.length - 1]
+    return sortedAuthorsByBlogsCount[0]
+}
+
+const mostLikes = blogs => {
+    if (blogs.length === 0) return undefined
+
+    const sortedAuthorsByLikesCount = _.chain(blogs)
+        .reduce((authorsByLikesCount, value) => {
+            authorsByLikesCount[value.author] = authorsByLikesCount[value.author] 
+                ? authorsByLikesCount[value.author] + value.likes
+                : value.likes
+            return authorsByLikesCount
+        }, {})
+        .map((value, key) => ({ author: key, likes: value }))
+        .orderBy('likes', 'desc')
+        .value()
+
+    return sortedAuthorsByLikesCount[0]
 }
 
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
