@@ -6,4 +6,11 @@ const totalLikes = blogs => {
         : blogs.reduce((totalLikes, blog) => totalLikes + blog.likes, 0)
 }
 
-module.exports = { dummy, totalLikes }
+const favoriteBlog = blogs => {
+    if (blogs.length === 0) return undefined
+    
+    const blogsSortedByLikes = blogs.sort((a, b) => b.likes - a.likes)
+    return blogsSortedByLikes[0]
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog }
