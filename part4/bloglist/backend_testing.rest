@@ -1,0 +1,13 @@
+GET http://localhost:3001/api/blogs
+
+###
+
+POST http://localhost:3001/api/blogs
+content-type: application/json
+
+{
+    "title": "Quantumania",
+    "author": "Pedro Salinas",
+    "url": "https://quantumania.es",
+    "likes": 13
+}
