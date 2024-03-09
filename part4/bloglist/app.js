@@ -18,7 +18,6 @@ mongoose.connect(MONGODB_URI)
         logger.error('error connecting to MongoDB:', error.message)
     })
 
-
 app.use(cors())
 app.use(express.json())
 app.use(requestLogger)
