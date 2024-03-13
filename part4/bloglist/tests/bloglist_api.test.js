@@ -23,8 +23,17 @@ describe('Bloglist API testing', () => {
             assert.strictEqual(blogs.body.length, initialBlogs.length)
         })
     })
-})
 
-after(async () => {
-    await mongoose.connection.close()
+    describe('Checking blogs properties', () => {
+        test('Blogs have id property but no _id', async () => {
+            const blogs = await blogsInDb()
+
+            assert(blogs[0].hasOwnProperty('id'))
+            assert(!blogs[0].hasOwnProperty('_id'))
+        })
+    })
+
+    after(async () => {
+        await mongoose.connection.close()
+    })
 })

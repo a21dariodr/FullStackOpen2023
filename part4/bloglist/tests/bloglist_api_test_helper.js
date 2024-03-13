@@ -59,7 +59,8 @@ const initializeDb = async () => {
 }
 
 const blogsInDb = async () => {
-    return await Blog.find({})
+    const blogs = await Blog.find({})
+    return blogs.map(blog => blog.toJSON())
 }
 
 const nonExistingId = async () => {
