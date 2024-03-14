@@ -25,11 +25,27 @@ describe('Bloglist API testing', () => {
     })
 
     describe('Checking blogs properties', () => {
-        test('Blogs have id property but no _id', async () => {
+        test('blogs have id property but no _id', async () => {
             const blogs = await blogsInDb()
 
             assert(blogs[0].hasOwnProperty('id'))
             assert(!blogs[0].hasOwnProperty('_id'))
+        })
+    })
+
+    describe('Creating new blogs', () => {
+        test('succeeds if the request is correct', async () => {
+            const newBlog = await superagent
+                .post('/api/blogs')
+                .send(initialBlogs[0])
+                .expect(201)
+                .expect('Content-Type', /application\/json/)
+            
+            assert.strictEqual(newBlog.content, initialBlogs[0].content)
+
+            const blogs = await blogsInDb()
+
+            assert.strictEqual(blogs.length, initialBlogs.length + 1)
         })
     })
 
