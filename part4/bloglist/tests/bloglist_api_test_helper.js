@@ -36,11 +36,24 @@ const initialBlogs = [
         author: "Robert C. Martin",
         url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
         likes: 2,
-    },
+    }
+]
+
+const malformedBlogs = [
     {
         title: "Test without likes count",
         author: "Dario",
         url: "http://test.com/",
+    },
+    {
+        author: "Dario",
+        url: "http://testWithoutTitle.com/",
+        likes: 20
+    },
+    {
+        title: "Test without url",
+        author: "Dario",
+        likes: 2,
     }
 ]
 
@@ -64,4 +77,4 @@ const nonExistingId = async () => {
     return ephemeralBlog._id.toString()
 }
 
-module.exports = { initialBlogs, initializeDb, blogsInDb, nonExistingId }
+module.exports = { initialBlogs, malformedBlogs, initializeDb, blogsInDb, nonExistingId }

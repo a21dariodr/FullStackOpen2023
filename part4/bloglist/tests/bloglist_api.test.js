@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const { initialBlogs, initializeDb, blogsInDb, nonExistingId } = require('./bloglist_api_test_helper')
+const { initialBlogs, malformedBlogs, initializeDb, blogsInDb, nonExistingId } = require('./bloglist_api_test_helper')
 const { log } = require('node:console')
 
 const superagent = supertest(app)
@@ -54,7 +54,7 @@ describe('Bloglist API testing', () => {
         test('sets likes to 0 if not specified', async () => {
             const response = await superagent
                 .post('/api/blogs')
-                .send(initialBlogs[initialBlogs.length - 1])
+                .send(malformedBlogs[0])
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
 
@@ -62,6 +62,28 @@ describe('Bloglist API testing', () => {
 
             assert.strictEqual(blogWithoutLikes.title, 'Test without likes count')
             assert.strictEqual(blogWithoutLikes.likes, 0)
+        })
+
+        test('fails if the note has not title', async () => {
+            const response = await superagent
+                .post('/api/blogs')
+                .send(malformedBlogs[1])
+                .expect(400)
+
+            const blogs = await blogsInDb()
+
+            assert.strictEqual(blogs.length, initialBlogs.length)
+        })
+
+        test('fails if the note has not url', async () => {
+            const response = await superagent
+                .post('/api/blogs')
+                .send(malformedBlogs[2])
+                .expect(400)
+
+            const blogs = await blogsInDb()
+
+            assert.strictEqual(blogs.length, initialBlogs.length)
         })
     })
 
