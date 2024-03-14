@@ -36,6 +36,11 @@ const initialBlogs = [
         author: "Robert C. Martin",
         url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
         likes: 2,
+    },
+    {
+        title: "Test without likes count",
+        author: "Dario",
+        url: "http://test.com/",
     }
 ]
 

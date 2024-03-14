@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const { initialBlogs, initializeDb, blogsInDb, nonExistingId } = require('./bloglist_api_test_helper')
+const { log } = require('node:console')
 
 const superagent = supertest(app)
 
@@ -35,17 +36,32 @@ describe('Bloglist API testing', () => {
 
     describe('Creating new blogs', () => {
         test('succeeds if the request is correct', async () => {
-            const newBlog = await superagent
+            const response = await superagent
                 .post('/api/blogs')
                 .send(initialBlogs[0])
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
+
+            const newBlog = JSON.parse(response.text)
             
-            assert.strictEqual(newBlog.content, initialBlogs[0].content)
+            assert.strictEqual(newBlog.title, initialBlogs[0].title)
 
             const blogs = await blogsInDb()
 
             assert.strictEqual(blogs.length, initialBlogs.length + 1)
+        })
+
+        test('sets likes to 0 if not specified', async () => {
+            const response = await superagent
+                .post('/api/blogs')
+                .send(initialBlogs[initialBlogs.length - 1])
+                .expect(201)
+                .expect('Content-Type', /application\/json/)
+
+            const blogWithoutLikes = JSON.parse(response.text)
+
+            assert.strictEqual(blogWithoutLikes.title, 'Test without likes count')
+            assert.strictEqual(blogWithoutLikes.likes, 0)
         })
     })
 
