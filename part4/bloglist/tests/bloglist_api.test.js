@@ -116,6 +116,53 @@ describe('Bloglist API testing', () => {
         })
     })
 
+    describe('Updating a blog', () => {
+        test('succeeds if correct values are provided', async () => {
+            let blogs = await blogsInDb()
+            let blogToUpdate = blogs[0]
+            blogToUpdate.title = 'Modified title'
+
+            const response = await superagent
+                .put(`/api/blogs/${blogToUpdate.id}`)
+                .send(blogToUpdate)
+                .expect(200)
+
+            blogs = await blogsInDb()
+
+            assert.strictEqual(blogs.length, initialBlogs.length)
+
+            const titles = blogs.map(blog => blog.title)
+            assert(titles.includes('Modified title'))
+        })
+
+        test('does nothing and does not return an object if the id does not exist', async () => {
+            let blogs = await blogsInDb()
+            let blogToUpdate = blogs[0]
+            
+            const unexistingId = await nonExistingId()
+
+            const response = await superagent
+                .put(`/api/blogs/${unexistingId}`)
+                .send(blogToUpdate)
+                .expect(200)
+
+            const updatedBlog = JSON.parse(response.text)
+            
+            assert(!updatedBlog)
+        })
+
+        test('fails if no title is provided', async () => {
+            let blogs = await blogsInDb()
+            let blogToUpdate = blogs[0]
+            delete blogToUpdate.title
+
+            const response = await superagent
+                .put(`/api/blogs/${blogToUpdate.id}`)
+                .send(blogToUpdate)
+                .expect(400)
+        })
+    })
+
     after(async () => {
         await mongoose.connection.close()
     })
