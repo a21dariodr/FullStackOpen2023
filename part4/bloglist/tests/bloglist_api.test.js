@@ -5,7 +5,6 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const { initialBlogs, malformedBlogs, initializeDb, blogsInDb, nonExistingId } = require('./bloglist_api_test_helper')
-const { log } = require('node:console')
 
 const superagent = supertest(app)
 
@@ -80,6 +79,36 @@ describe('Bloglist API testing', () => {
                 .post('/api/blogs')
                 .send(malformedBlogs[2])
                 .expect(400)
+
+            const blogs = await blogsInDb()
+
+            assert.strictEqual(blogs.length, initialBlogs.length)
+        })
+    })
+
+    describe('Deleting a blog', () => {
+        test('succeeds if the id exists', async () => {
+            let blogs = await blogsInDb()
+            let blogToDelete = blogs[0]
+
+            await superagent
+                .delete(`/api/blogs/${blogToDelete.id}`)
+                .expect(204)
+
+            blogs = await blogsInDb()
+
+            assert.strictEqual(blogs.length, initialBlogs.length - 1)
+
+            const titles = blogs.map(blog => blog.title)
+            assert(!titles.includes(blogToDelete.title))
+        })
+
+        test('does nothing if the id does not exist', async () => {
+            const unexistingId = await nonExistingId()
+
+            await superagent
+                .delete(`/api/blogs/${unexistingId}`)
+                .expect(204)
 
             const blogs = await blogsInDb()
 
