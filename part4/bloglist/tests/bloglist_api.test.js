@@ -64,7 +64,7 @@ describe('Bloglist API testing', () => {
         })
 
         test('fails if the note has not title', async () => {
-            const response = await superagent
+            await superagent
                 .post('/api/blogs')
                 .send(malformedBlogs[1])
                 .expect(400)
@@ -75,7 +75,7 @@ describe('Bloglist API testing', () => {
         })
 
         test('fails if the note has not url', async () => {
-            const response = await superagent
+            await superagent
                 .post('/api/blogs')
                 .send(malformedBlogs[2])
                 .expect(400)
@@ -122,7 +122,7 @@ describe('Bloglist API testing', () => {
             let blogToUpdate = blogs[0]
             blogToUpdate.title = 'Modified title'
 
-            const response = await superagent
+            await superagent
                 .put(`/api/blogs/${blogToUpdate.id}`)
                 .send(blogToUpdate)
                 .expect(200)
@@ -156,7 +156,7 @@ describe('Bloglist API testing', () => {
             let blogToUpdate = blogs[0]
             delete blogToUpdate.title
 
-            const response = await superagent
+            await superagent
                 .put(`/api/blogs/${blogToUpdate.id}`)
                 .send(blogToUpdate)
                 .expect(400)

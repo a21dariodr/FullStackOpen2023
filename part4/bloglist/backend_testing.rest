@@ -11,3 +11,18 @@ content-type: application/json
     "url": "https://quantumania.es",
     "likes": 13
 }
+
+###
+
+GET http://localhost:3001/api/users
+
+###
+
+POST http://localhost:3001/api/users
+content-type: application/json
+
+{
+    "user": "Nuria",
+    "username": "nlin4575",
+    "password": "testpass"
+}
