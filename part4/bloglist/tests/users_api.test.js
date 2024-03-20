@@ -14,7 +14,7 @@ describe('Bloglist API testing', () => {
         await User.deleteMany({})
         
         const passwordHash = await bcrypt.hash('secretstring', 10)
-        const user = new User({ username: 'root', passwordHash })
+        const user = new User({ username: 'root', password: passwordHash })
         
         await user.save()
     })
@@ -58,6 +58,46 @@ describe('Bloglist API testing', () => {
     
         const usersAtEnd = await usersInDb()
         assert(result.body.error.includes('expected `username` to be unique'))
+    
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+
+    test('Creation fails if password is shorten than 3 characters', async () => {
+        const usersAtStart = await usersInDb()
+
+        const newUser = {
+            username: 'newUser',
+            name: 'newuser',
+            password: '12',
+        }
+    
+        const result = await superagent
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+    
+        const usersAtEnd = await usersInDb()
+        assert(result.body.error.includes('password has to be at least 3 characters long'))
+    
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+
+    test('Creation fails if no password is provided', async () => {
+        const usersAtStart = await usersInDb()
+
+        const newUser = {
+            username: 'newUser',
+            name: 'newuser'
+        }
+    
+        const result = await superagent
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+    
+        const usersAtEnd = await usersInDb()
+        assert(result.body.error.includes('password is required'))
     
         assert.strictEqual(usersAtEnd.length, usersAtStart.length)
     })
