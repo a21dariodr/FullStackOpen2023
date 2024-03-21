@@ -19,9 +19,6 @@ blogRouter.post('/', async (request, response) => {
     if (!decodedToken.id) return response.status(401).json({ error: 'invalid token' })
     const user = await User.findById(decodedToken.id)
 
-    console.log(decodedToken);
-    console.log(user);
-
     blog.user = user.id
 
     const newBlog = await blog.save()
@@ -48,6 +45,16 @@ blogRouter.put('/:id', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
+  if (!request.token) return response.status(401).json({ error: 'token needed for deleting entries' })
+  
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) return response.status(401).json({ error: 'invalid token' })
+  const user = await User.findById(decodedToken.id)
+
+  const blog = await Blog.findById(request.params.id)
+
+  if (blog.user.toString() !== user.id) return response.status(401).json({ error: 'only the owner can delete blogs' })
+
   await Blog.findByIdAndDelete(request.params.id)
 
   response.status(204).end()
