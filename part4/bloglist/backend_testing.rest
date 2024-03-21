@@ -1,3 +1,13 @@
+POST http://localhost:3001/api/login
+content-type: application/json
+
+{
+    "username": "nlin4575",
+    "password": "testpass"
+}
+
+###
+
 GET http://localhost:3001/api/blogs
 
 ###
