@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
     {
@@ -59,6 +60,7 @@ const malformedBlogs = [
 
 const initializeDb = async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
 
     const blogsObjects = initialBlogs.map(blog => new Blog(blog))
     await Promise.all(blogsObjects.map(blogObject => blogObject.save()))
