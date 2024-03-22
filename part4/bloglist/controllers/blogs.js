@@ -1,7 +1,5 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
 
 blogRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
@@ -15,9 +13,7 @@ blogRouter.post('/', async (request, response) => {
 
     if (!blog.likes) blog.likes = 0
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) return response.status(401).json({ error: 'invalid token' })
-    const user = await User.findById(decodedToken.id)
+    const user = request.user
 
     blog.user = user.id
 
@@ -47,9 +43,7 @@ blogRouter.put('/:id', async (request, response) => {
 blogRouter.delete('/:id', async (request, response) => {
   if (!request.token) return response.status(401).json({ error: 'token needed for deleting entries' })
   
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) return response.status(401).json({ error: 'invalid token' })
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   const blog = await Blog.findById(request.params.id)
 

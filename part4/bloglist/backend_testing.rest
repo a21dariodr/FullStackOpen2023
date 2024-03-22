@@ -9,6 +9,7 @@ content-type: application/json
 ###
 
 GET http://localhost:3001/api/blogs
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5saW40NTc1IiwiaWQiOiI2NWZjODk3MDVkYWY3MGI5MGYyNjU3OTMiLCJpYXQiOjE3MTEwNTQ2MTJ9.9pf1pRV3cdUOKxZ7WlCwPQrmVVFHsRoNXvkdP2uTFMI
 
 ###
 
