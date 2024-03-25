@@ -10,6 +10,16 @@ const App = () => {
   const [user, setUser] = useState(null) 
 
   useEffect(() => {
+    const userJSON = localStorage.getItem('loggedUser')
+
+    if (userJSON) {
+      const user = JSON.parse(userJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
+  useEffect(() => {
     if (user) {
       blogService.getAll().then(blogs =>
         setBlogs( blogs )
@@ -23,14 +33,20 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
 
-      console.log('logging in with', username, password)
+      console.log('Logging in with', username, password)
+      blogService.setToken(user.token)
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUser(user)
       setUsername('')
       setPassword('')
-      blogService.setToken(user.token)
     } catch( exception) {
       console.log('Invalid username or password')
     }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('loggedUser')
+    setUser(null)
   }
 
   const loginForm = () => (
@@ -51,13 +67,13 @@ const App = () => {
   const blogsList = () => (
     <div>
       <h2>Blogs</h2>
-      <div>{user.name} is logged in</div>
+      <div>{user.name} is logged in
+        &nbsp;<button onClick={handleLogout}>Logout</button></div>
       <ul>
-
-      </ul>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
+      </ul>
     </div>
   )
 
