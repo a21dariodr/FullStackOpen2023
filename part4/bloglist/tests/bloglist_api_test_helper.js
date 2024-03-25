@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
@@ -62,13 +63,26 @@ const initializeDb = async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
 
-    const blogsObjects = initialBlogs.map(blog => new Blog(blog))
+    const passwordHash = await bcrypt.hash('testpass', 10)
+    const user = new User({ name: 'Nuria', username: 'nlin4575', password: passwordHash })
+    const savedUser = await user.save()
+
+    const blogsObjects = initialBlogs.map(blog => {
+        blog.user = savedUser.id
+        return new Blog(blog)
+    })
+
     await Promise.all(blogsObjects.map(blogObject => blogObject.save()))
 }
 
 const blogsInDb = async () => {
     const blogs = await Blog.find({})
     return blogs.map(blog => blog.toJSON())
+}
+
+const userForTests = async () => {
+    const user = await User.findOne({ username: 'nlin4575' })
+    return user
 }
 
 const nonExistingId = async () => {
@@ -79,4 +93,4 @@ const nonExistingId = async () => {
     return ephemeralBlog._id.toString()
 }
 
-module.exports = { initialBlogs, malformedBlogs, initializeDb, blogsInDb, nonExistingId }
+module.exports = { initialBlogs, userForTests, malformedBlogs, initializeDb, blogsInDb, nonExistingId }

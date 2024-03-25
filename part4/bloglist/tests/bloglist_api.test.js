@@ -1,9 +1,10 @@
 const { test, describe, beforeEach, after } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const supertest = require('supertest')
 const app = require('../app')
-const { initialBlogs, malformedBlogs, initializeDb, blogsInDb, nonExistingId } = require('./bloglist_api_test_helper')
+const { initialBlogs, userForTests, malformedBlogs, initializeDb, blogsInDb, nonExistingId } = require('./bloglist_api_test_helper')
 
 const superagent = supertest(app)
 
@@ -13,15 +14,16 @@ describe('Bloglist API testing', () => {
     beforeEach(async () => {
         await initializeDb()
 
-        await superagent
-            .post('/api/users')
-            .send({ username: 'nlin4575', password: 'testpass' })
+        const user = await userForTests()
 
-        const result = await superagent
-            .post('/api/login')
-            .send({ username: 'nlin4575', password: 'testpass' })
+        const userForToken = {
+            username: user.username,
+            id: user._id
+        }
 
-        authorization = `Bearer ${result.body.token}`
+        const token = jwt.sign(userForToken, process.env.SECRET)
+
+        authorization = `Bearer ${token}`
     })
 
     describe('Obtention of blogs from the database', () => {
@@ -113,8 +115,7 @@ describe('Bloglist API testing', () => {
         })
     })
 
-    // Delete tests fail as blogs haven't user info
-    /* describe('Deleting a blog', () => {
+    describe('Deleting a blog', () => {
         test('succeeds if the id exists', async () => {
             let blogs = await blogsInDb()
             let blogToDelete = blogs[0]
@@ -144,7 +145,7 @@ describe('Bloglist API testing', () => {
 
             assert.strictEqual(blogs.length, initialBlogs.length)
         })
-    }) */
+    })
 
     describe('Updating a blog', () => {
         test('succeeds if correct values are provided', async () => {
