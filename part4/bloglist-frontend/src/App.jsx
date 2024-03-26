@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,7 +12,9 @@ const App = () => {
 
   const [newBlogTitle, setNewBlogTitle] = useState('') 
   const [newBlogAuthor, setNewBlogAuthor] = useState('') 
-  const [newBlogUrl, setNewBlogUrl] = useState('') 
+  const [newBlogUrl, setNewBlogUrl] = useState('')
+
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     const userJSON = localStorage.getItem('loggedUser')
@@ -45,6 +48,11 @@ const App = () => {
       setPassword('')
     } catch(exception) {
       console.log('Invalid username or password')
+
+      setMessage('Invalid username or password')
+      setTimeout(() => {
+        setMessage('')
+      }, 6000)
     }
   }
 
@@ -55,10 +63,18 @@ const App = () => {
 
   const handleCreateBlog = async (event) => {
     event.preventDefault()
-    
+
     try {
       const newBlog = await blogService.createBlog({ title: newBlogTitle, author: newBlogAuthor, url: newBlogUrl })
       setBlogs(blogs.concat(newBlog))
+      setNewBlogAuthor('')
+      setNewBlogTitle('')
+      setNewBlogUrl('')
+
+      setMessage(`New blog "${newBlogTitle}" by ${newBlogAuthor} added`)
+      setTimeout(() => {
+        setMessage('')
+      }, 6000)
     } catch (exception) {
       console.log('Error when creating new blog')
     }
@@ -67,6 +83,7 @@ const App = () => {
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <h2>Log in to application</h2>
+      <Notification message={message} color={'red'}/>
       <div>
         <span>Username </span>
         <input type='text' value={username} onChange={({ target }) => setUsername(target.value)} name='username'/>
@@ -96,6 +113,7 @@ const App = () => {
     <div>
       <form onSubmit={handleCreateBlog}>
         <h2>Create blog</h2>
+        <Notification message={message} color={'green'}/>
         <div>
           <span>Title </span>
           <input type='text' value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name='newBlogTitle'/>
