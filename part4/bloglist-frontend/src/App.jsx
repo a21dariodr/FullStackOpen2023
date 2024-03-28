@@ -28,11 +28,13 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      )  
+      blogService.getAll().then(blogs => {
+        setBlogs(sortBlogsByLikes(blogs))
+      })  
     }
   }, [user])
+
+  const sortBlogsByLikes = blogs => blogs.sort((a, b) => b.likes - a.likes)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -77,6 +79,12 @@ const App = () => {
     }
   }
 
+  const updateBlog = async modifiedBlog => {
+    const updatedBlog = await blogService.updateBlog(modifiedBlog)
+    const filteredBlogs = blogs.filter(blog => blog.id !== modifiedBlog.id)
+    setBlogs(sortBlogsByLikes(filteredBlogs.concat(modifiedBlog)))
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <h2>Log in to application</h2>
@@ -102,7 +110,7 @@ const App = () => {
       <br/>
       <div>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
         )}
       </div>
     </div>
