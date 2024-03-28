@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -15,6 +16,8 @@ const App = () => {
   const [newBlogUrl, setNewBlogUrl] = useState('')
 
   const [message, setMessage] = useState('')
+
+  const ref = useRef()
 
   useEffect(() => {
     const userJSON = localStorage.getItem('loggedUser')
@@ -70,6 +73,8 @@ const App = () => {
       setNewBlogAuthor('')
       setNewBlogTitle('')
       setNewBlogUrl('')
+
+      ref.current.toggleVisibility()
 
       setMessage(`New blog "${newBlogTitle}" by ${newBlogAuthor} added`)
       setTimeout(() => {
@@ -128,7 +133,8 @@ const App = () => {
         </div>
         <br/>
         <div>
-          <button type='submit'>Save note</button>
+          <button type='submit'>Save note</button>&nbsp;
+          <button type='button' onClick={() => ref.current.toggleVisibility()}>Cancel</button>
         </div>
       </form>
     </div>
@@ -136,7 +142,9 @@ const App = () => {
 
   const loggedUserContent = () => (
     <>
-      {addBlogForm()}
+      <Togglable buttonLabel="Add blog" ref={ref}>
+        {addBlogForm()}
+      </Togglable>
       {blogsList()}
     </>
   )
