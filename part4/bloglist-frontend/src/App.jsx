@@ -80,9 +80,23 @@ const App = () => {
   }
 
   const updateBlog = async modifiedBlog => {
-    const updatedBlog = await blogService.updateBlog(modifiedBlog)
-    const filteredBlogs = blogs.filter(blog => blog.id !== modifiedBlog.id)
-    setBlogs(sortBlogsByLikes(filteredBlogs.concat(modifiedBlog)))
+    try {
+      const updatedBlog = await blogService.updateBlog(modifiedBlog)
+      const filteredBlogs = blogs.filter(blog => blog.id !== modifiedBlog.id)
+      setBlogs(sortBlogsByLikes(filteredBlogs.concat(modifiedBlog)))
+    } catch (exception) {
+      console.log('Error when updating the blog')
+    }
+  }
+
+  const deleteBlog = async blogToDelete => {
+    try {
+      await blogService.deleteBlog(blogToDelete)
+      const filteredBlogs = blogs.filter(blog => blog.id !== blogToDelete.id)
+      setBlogs(sortBlogsByLikes(filteredBlogs))
+    } catch (exception) {
+      console.log('Error when deleting the blog')
+    } 
   }
 
   const loginForm = () => (
@@ -110,7 +124,7 @@ const App = () => {
       <br/>
       <div>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
         )}
       </div>
     </div>
