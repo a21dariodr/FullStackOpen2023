@@ -1,11 +1,13 @@
 const { test, describe, beforeEach, after } = require('node:test')
 const assert = require('node:assert')
+const { PORT } = require('../utils/config')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const supertest = require('supertest')
 const app = require('../app')
 const { initialBlogs, userForTests, malformedBlogs, initializeDb, blogsInDb, nonExistingId } = require('./bloglist_api_test_helper')
 
+const server = app.listen(PORT, () => {})
 const superagent = supertest(app)
 
 let authorization;
@@ -199,5 +201,6 @@ describe('Bloglist API testing', () => {
 
     after(async () => {
         await mongoose.connection.close()
+        server.close()
     })
 })

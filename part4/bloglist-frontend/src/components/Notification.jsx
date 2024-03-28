@@ -1,20 +1,27 @@
-const Notification = ({ color, message}) => {
-    if (! message) return null
+import PropTypes from 'prop-types'
 
-    const styles = {
-        backgroundColor: 'lightgrey',
-        border: `2px solid ${color}`,
-        borderRadius: '6px',
-        color: color,
-        padding: '8px',
-        margin: '8px'
-    }
+const Notification = ({ color, message }) => {
+  if (! message) return null
 
-    return (
-        <div style={styles}>
-            {message}
-        </div>
-    )
+  const styles = {
+    backgroundColor: 'lightgrey',
+    border: `2px solid ${color}`,
+    borderRadius: '6px',
+    color: color,
+    padding: '8px',
+    margin: '8px'
+  }
+
+  return (
+    <div style={styles}>
+      {message}
+    </div>
+  )
+}
+
+Notification.propTypes = {
+  color: PropTypes.string,
+  message: PropTypes.string.isRequired
 }
 
 export default Notification

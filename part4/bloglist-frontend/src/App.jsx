@@ -8,7 +8,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
@@ -30,7 +30,7 @@ const App = () => {
     if (user) {
       blogService.getAll().then(blogs => {
         setBlogs(sortBlogsByLikes(blogs))
-      })  
+      })
     }
   }, [user])
 
@@ -67,7 +67,7 @@ const App = () => {
     try {
       const createdBlog = await blogService.createBlog({ title: newBlog.title, author: newBlog.author, url: newBlog.url })
       setBlogs(blogs.concat(createdBlog))
-      
+
       togglableRef.current.toggleVisibility()
 
       setMessage(`New blog "${createdBlog.title}" by ${createdBlog.author} added`)
@@ -96,7 +96,7 @@ const App = () => {
       setBlogs(sortBlogsByLikes(filteredBlogs))
     } catch (exception) {
       console.log('Error when deleting the blog')
-    } 
+    }
   }
 
   const loginForm = () => (
