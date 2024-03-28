@@ -99,11 +99,12 @@ const App = () => {
       <h2>Blogs</h2>
       <div>{user.name} is logged in
         &nbsp;<button onClick={handleLogout}>Logout</button></div>
-      <ul>
+      <br/>
+      <div>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
-      </ul>
+      </div>
     </div>
   )
 
