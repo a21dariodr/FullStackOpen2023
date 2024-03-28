@@ -26,16 +26,20 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.put('/:id', async (request, response) => {
+  if (!request.token) return response.status(401).json({ error: 'token needed for deleting entries' })
+
   const id = request.params.id
-  const { title, author, url, likes } = request.body
+  const { title, author, url, likes, user } = request.body
 
   if (!title || !author || !url) return response.status(400).end()
 
   if (!likes) likes = 0
 
-  const updatedBlog = await Blog.findByIdAndUpdate(id,
-    { title, author, url, likes },
-    { new: true, runValidators: true, context: 'query' })
+  const updatedBlog = await Blog
+    .findByIdAndUpdate(id,
+      { title, author, url, likes, user: user.id },
+      { new: true, runValidators: true, context: 'query' })
+    .populate('user', { username: 1, name: 1 })
 
   response.json(updatedBlog)
 })
