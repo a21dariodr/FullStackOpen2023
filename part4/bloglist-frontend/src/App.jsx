@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import AddBlogForm from './components/AddBlogForm'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -11,13 +12,9 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const [newBlogTitle, setNewBlogTitle] = useState('') 
-  const [newBlogAuthor, setNewBlogAuthor] = useState('') 
-  const [newBlogUrl, setNewBlogUrl] = useState('')
-
   const [message, setMessage] = useState('')
 
-  const ref = useRef()
+  const togglableRef = useRef()
 
   useEffect(() => {
     const userJSON = localStorage.getItem('loggedUser')
@@ -64,19 +61,14 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
-
+  const createBlog = async (newBlog) => {
     try {
-      const newBlog = await blogService.createBlog({ title: newBlogTitle, author: newBlogAuthor, url: newBlogUrl })
-      setBlogs(blogs.concat(newBlog))
-      setNewBlogAuthor('')
-      setNewBlogTitle('')
-      setNewBlogUrl('')
+      const createdBlog = await blogService.createBlog({ title: newBlog.title, author: newBlog.author, url: newBlog.url })
+      setBlogs(blogs.concat(createdBlog))
+      
+      togglableRef.current.toggleVisibility()
 
-      ref.current.toggleVisibility()
-
-      setMessage(`New blog "${newBlogTitle}" by ${newBlogAuthor} added`)
+      setMessage(`New blog "${createdBlog.title}" by ${createdBlog.author} added`)
       setTimeout(() => {
         setMessage('')
       }, 6000)
@@ -97,6 +89,7 @@ const App = () => {
         <span>Password </span>
         <input type='password' value={password} onChange={({ target }) => setPassword(target.value)} name='password'/>
       </div>
+      <br/>
       <button type='submit'>Login</button>
     </form>
   )
@@ -114,36 +107,10 @@ const App = () => {
     </div>
   )
 
-  const addBlogForm = () => (
-    <div>
-      <form onSubmit={handleCreateBlog}>
-        <h2>Create blog</h2>
-        <Notification message={message} color={'green'}/>
-        <div>
-          <span>Title </span>
-          <input type='text' value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name='newBlogTitle'/>
-        </div>
-        <div>
-          <span>Author </span>
-          <input type='text' value={newBlogAuthor} onChange={({ target }) => setNewBlogAuthor(target.value)} name='newBlogAuthor'/>
-        </div>
-        <div>
-          <span>URL </span>
-          <input type='text' value={newBlogUrl} onChange={({ target }) => setNewBlogUrl(target.value)} name='newBlogUrl'/>
-        </div>
-        <br/>
-        <div>
-          <button type='submit'>Save note</button>&nbsp;
-          <button type='button' onClick={() => ref.current.toggleVisibility()}>Cancel</button>
-        </div>
-      </form>
-    </div>
-  )
-
   const loggedUserContent = () => (
     <>
-      <Togglable buttonLabel="Add blog" ref={ref}>
-        {addBlogForm()}
+      <Togglable buttonLabel="Add blog" ref={togglableRef}>
+        <AddBlogForm createBlog={createBlog} togglableRef={togglableRef}/>
       </Togglable>
       {blogsList()}
     </>
@@ -152,6 +119,7 @@ const App = () => {
   return (
     <>
       <h1>Bloglist app</h1>
+      <Notification message={message} color={'green'}/>
       {user
         ? loggedUserContent()
         : loginForm()
