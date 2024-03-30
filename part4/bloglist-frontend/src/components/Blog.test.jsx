@@ -1,8 +1,16 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('Blog component', () => {
   let container
+
+  beforeAll(() => {
+    localStorage.setItem('loggedUser', JSON.stringify({
+      name: 'Pepe',
+      username: 'pepep'
+    }))
+  })
 
   beforeEach(() => {
     const deleteMockFunction = vi.fn()
@@ -11,7 +19,11 @@ describe('Blog component', () => {
       title: 'React patterns',
       author: 'Michael Chan',
       url: 'https://reactpatterns.com/',
-      likes: 7
+      likes: 7,
+      user: {
+        name: 'Pepe',
+        username: 'pepep'
+      }
     }
 
     container = render(
@@ -31,5 +43,22 @@ describe('Blog component', () => {
     expect(titleInfo).toHaveTextContent('React patterns')
     expect(urlInfo).toBeNull()
     expect(likesInfo).toBeNull()
+  })
+
+  test('renders the blog url and likes after show details button is clicked', async () => {
+    const user = userEvent.setup()
+    const showDetailsButton = screen.getByText('Show details')
+
+    await user.click(showDetailsButton)
+
+    const urlInfo = container.querySelector('#blogUrl')
+    const likesInfo = container.querySelector('#blogLikes')
+
+    expect(urlInfo).toHaveTextContent('URL: https://reactpatterns.com/')
+    expect(likesInfo).toHaveTextContent('Likes: 7')
+  })
+
+  afterAll(() => {
+    localStorage.removeItem('loggedUser')
   })
 })
