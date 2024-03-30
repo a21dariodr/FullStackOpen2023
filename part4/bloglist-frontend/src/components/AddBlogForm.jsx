@@ -25,15 +25,15 @@ const AddBlogForm = ({ createBlog, togglableRef }) => {
         <h2>Create blog</h2>
         <div>
           <span>Title </span>
-          <input type='text' value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name='newBlogTitle'/>
+          <input type='text' value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name='newBlogTitle' id='blogTitle'/>
         </div>
         <div>
           <span>Author </span>
-          <input type='text' value={newBlogAuthor} onChange={({ target }) => setNewBlogAuthor(target.value)} name='newBlogAuthor'/>
+          <input type='text' value={newBlogAuthor} onChange={({ target }) => setNewBlogAuthor(target.value)} name='newBlogAuthor' id='blogAuthor'/>
         </div>
         <div>
           <span>URL </span>
-          <input type='text' value={newBlogUrl} onChange={({ target }) => setNewBlogUrl(target.value)} name='newBlogUrl'/>
+          <input type='text' value={newBlogUrl} onChange={({ target }) => setNewBlogUrl(target.value)} name='newBlogUrl' id='blogUrl'/>
         </div>
         <br/>
         <div>
