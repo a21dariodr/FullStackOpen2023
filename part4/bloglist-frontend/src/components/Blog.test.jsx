@@ -4,6 +4,8 @@ import Blog from './Blog'
 
 describe('Blog component', () => {
   let container
+  const deleteMockFunction = vi.fn()
+  const updateMockFunction = vi.fn()
 
   beforeAll(() => {
     localStorage.setItem('loggedUser', JSON.stringify({
@@ -13,8 +15,6 @@ describe('Blog component', () => {
   })
 
   beforeEach(() => {
-    const deleteMockFunction = vi.fn()
-    const updateMockFunction = vi.fn()
     const blog = {
       title: 'React patterns',
       author: 'Michael Chan',
@@ -56,6 +56,20 @@ describe('Blog component', () => {
 
     expect(urlInfo).toHaveTextContent('URL: https://reactpatterns.com/')
     expect(likesInfo).toHaveTextContent('Likes: 7')
+  })
+
+  test('calls twice the like button handler if the button is clicked twice', async () => {
+    const user = userEvent.setup()
+    const showDetailsButton = screen.getByText('Show details')
+
+    await user.click(showDetailsButton)
+
+    const likeButton = screen.getByText('Like')
+
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(updateMockFunction.mock.calls).toHaveLength(2)
   })
 
   afterAll(() => {
