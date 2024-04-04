@@ -105,11 +105,11 @@ const App = () => {
       <Notification message={message} color={'red'}/>
       <div>
         <span>Username </span>
-        <input type='text' value={username} onChange={({ target }) => setUsername(target.value)} name='username'/>
+        <input data-testid='username' type='text' value={username} onChange={({ target }) => setUsername(target.value)} name='username'/>
       </div>
       <div>
         <span>Password </span>
-        <input type='password' value={password} onChange={({ target }) => setPassword(target.value)} name='password'/>
+        <input data-testid='password' type='password' value={password} onChange={({ target }) => setPassword(target.value)} name='password'/>
       </div>
       <br/>
       <button data-testid='submitButton' type='submit'>Login</button>
@@ -135,6 +135,7 @@ const App = () => {
       <Togglable buttonLabel="Add blog" ref={togglableRef}>
         <AddBlogForm createBlog={createBlog} togglableRef={togglableRef}/>
       </Togglable>
+      <Notification message={message} color={'green'}/>
       {blogsList()}
     </>
   )
@@ -142,7 +143,6 @@ const App = () => {
   return (
     <>
       <h1>Bloglist app</h1>
-      <Notification message={message} color={'green'}/>
       {user
         ? loggedUserContent()
         : loginForm()
