@@ -17,14 +17,14 @@ describe('AddBlogForm component', () => {
     const authorInput = container.querySelector('#blogAuthor')
     const urlInput = container.querySelector('#blogUrl')
 
-    const saveNoteButton = screen.getByText('Save note')
+    const saveBlogButton = screen.getByText('Save blog')
     const user = userEvent.setup()
 
     await user.type(titleInput, 'React patterns')
     await user.type(authorInput, 'Michael Chan')
     await user.type(urlInput, 'https://reactpatterns.com/')
 
-    await user.click(saveNoteButton)
+    await user.click(saveBlogButton)
 
     expect(createMockFunction.mock.calls).toHaveLength(1)
     expect(createMockFunction.mock.calls[0][0]).toStrictEqual({

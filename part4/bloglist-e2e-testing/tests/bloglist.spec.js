@@ -1,10 +1,10 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { login } = require('./bloglist-helper') 
+const { login, createBlog } = require('./bloglist-helper') 
 
 describe('Bloglist app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http:localhost:3001/api/testing/reset')
-    await request.post('http://localhost:3001/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'Maria Peres',
         username: 'mperes2',
@@ -12,7 +12,7 @@ describe('Bloglist app', () => {
       }
     })
 
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('Login form is shown', async ({ page }) => {

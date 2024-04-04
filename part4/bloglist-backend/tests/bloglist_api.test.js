@@ -81,7 +81,7 @@ describe('Bloglist API testing', () => {
             assert.strictEqual(blogWithoutLikes.likes, 0)
         })
 
-        test('fails if the note has not title', async () => {
+        test('fails if the blog has not title', async () => {
             await superagent
                 .post('/api/blogs')
                 .set({ Authorization: authorization })
@@ -93,7 +93,7 @@ describe('Bloglist API testing', () => {
             assert.strictEqual(blogs.length, initialBlogs.length)
         })
 
-        test('fails if the note has not url', async () => {
+        test('fails if the blog has not url', async () => {
             await superagent
                 .post('/api/blogs')
                 .set({ Authorization: authorization })

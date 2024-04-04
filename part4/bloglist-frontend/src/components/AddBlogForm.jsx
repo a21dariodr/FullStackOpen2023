@@ -25,19 +25,19 @@ const AddBlogForm = ({ createBlog, togglableRef }) => {
         <h2>Create blog</h2>
         <div>
           <span>Title </span>
-          <input type='text' value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name='newBlogTitle' id='blogTitle'/>
+          <input data-testid='newBlogTitle' type='text' value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name='newBlogTitle' id='blogTitle'/>
         </div>
         <div>
           <span>Author </span>
-          <input type='text' value={newBlogAuthor} onChange={({ target }) => setNewBlogAuthor(target.value)} name='newBlogAuthor' id='blogAuthor'/>
+          <input data-testid='newBlogAuthor' type='text' value={newBlogAuthor} onChange={({ target }) => setNewBlogAuthor(target.value)} name='newBlogAuthor' id='blogAuthor'/>
         </div>
         <div>
           <span>URL </span>
-          <input type='text' value={newBlogUrl} onChange={({ target }) => setNewBlogUrl(target.value)} name='newBlogUrl' id='blogUrl'/>
+          <input data-testid='newBlogUrl' type='text' value={newBlogUrl} onChange={({ target }) => setNewBlogUrl(target.value)} name='newBlogUrl' id='blogUrl'/>
         </div>
         <br/>
         <div>
-          <button type='submit'>Save note</button>&nbsp;
+          <button type='submit'>Save blog</button>&nbsp;
           <button type='button' onClick={() => togglableRef.current.toggleVisibility()}>Cancel</button>
         </div>
       </form>
