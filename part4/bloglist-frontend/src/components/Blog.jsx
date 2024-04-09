@@ -35,15 +35,15 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
 
   return (
     <div style={blogStyle}>
-      <span id='blogTitle'>{blog.title}</span> - <span id='blogAuthor'>{blog.author}</span>&nbsp;
+      <span className='blogTitle'>{blog.title}</span> - <span className='blogAuthor'>{blog.author}</span>&nbsp;
       <button onClick={() => setShowDetails(!showDetails)}>{showDetails ? 'Hide details' : 'Show details'}</button>
       {showDetails
         ? (
           <>
             <br/><br/>
-            <span id='blogUrl'>URL: {blog.url}</span><br/>
-            <span id='blogLikes'>Likes: {blog.likes}</span> <button onClick={handleLike}>Like</button><br/>
-            <span id='blogUser'>User: {blog.user.name}</span><br/>
+            <span className='blogUrl'>URL: {blog.url}</span><br/>
+            <span className='blogLikes'>Likes: {blog.likes}</span> <button onClick={handleLike}>Like</button><br/>
+            <span className='blogUser'>User: {blog.user.name}</span><br/>
             {user.username === blog.user.username
               ? (<button style={removeButtonStyle} onClick={handleRemove}>Remove</button>)
               : ''

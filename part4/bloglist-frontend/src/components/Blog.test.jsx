@@ -32,10 +32,10 @@ describe('Blog component', () => {
   })
 
   test('renders only the blog title and author by default', () => {
-    const authorInfo = container.querySelector('#blogAuthor')
-    const titleInfo = container.querySelector('#blogTitle')
-    const urlInfo = container.querySelector('#blogUrl')
-    const likesInfo = container.querySelector('#blogLikes')
+    const authorInfo = container.querySelector('.blogAuthor')
+    const titleInfo = container.querySelector('.blogTitle')
+    const urlInfo = container.querySelector('.blogUrl')
+    const likesInfo = container.querySelector('.blogLikes')
 
     screen.debug(container)
 

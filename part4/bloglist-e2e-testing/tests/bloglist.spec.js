@@ -31,10 +31,21 @@ describe('Bloglist app', () => {
       await login(page, 'mperes2', 'wrongpass')
       await expect(page.getByTestId('submitButton')).toBeVisible()
 
-      const notification = await page.locator('.notification')
+      const notification = page.locator('.notification')
       await expect(notification).toContainText('Invalid username or password')
       await expect(notification).toHaveCSS('border-radius', '6px')
       await expect(notification).toHaveCSS('color', 'rgb(255, 0, 0)')
+    })
+  })
+
+  describe('a logged in user', () => {
+    beforeEach(async ({ page }) => {
+      await login(page, 'mperes2', 'testpass')
+    })
+
+    test('can create a new blog', async ({ page }) => {
+      await createBlog(page, 'Test blog 1', 'Anonymous', 'http://fakeurl.test1.ru')
+      await expect(page.locator('.blogTitle')).toContainText('Test blog 1')
     })
   })
 })
