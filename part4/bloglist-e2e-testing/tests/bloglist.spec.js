@@ -48,12 +48,11 @@ describe('Bloglist app', () => {
       await expect(page.locator('.blogTitle').getByText('Test blog 1')).toBeVisible()
     })
 
-    describe('When many note exists', () => {
+    describe('When many notes exists', () => {
       beforeEach(async ({ page }) => {
         await createBlog(page, 'Test blog 1', 'Anonymous', 'http://fakeurl.test1.ru')
         await createBlog(page, 'Test blog 2', 'OtherAnonymous', 'http://fakeurl2.test1.ru')
         await createBlog(page, 'Test blog 3', 'AnotherAnonymous', 'http://fakeurl3.test1.ru')
-        await createBlog(page, 'Test blog 4', 'OneMoreAnonymous', 'http://fakeurl4.test1.ru')
       })
 
       test('can like a blog', async ({ page }) => {
@@ -63,6 +62,17 @@ describe('Bloglist app', () => {
         await secondBlogLikeButton.click()
         await secondBlogLikeButton.click()
         await expect(secondBlogDiv.locator('.blogLikes')).toContainText(/2$/)
+      })
+
+      test('can delete a blog that has created', async ({ page }) => {
+        const thirdBlogDiv = page.locator('#blogs').getByText('Test blog 3').locator('..')
+        await thirdBlogDiv.getByRole('button', { name: 'Show details' }).click()
+        page.on('dialog', async dialog => {
+          expect(dialog.message()).toEqual('Blog "Test blog 3" by AnotherAnonymous is about to be deleted!')
+          await dialog.accept()
+        })
+        await thirdBlogDiv.getByRole('button', { name: 'Remove' }).click()
+        await expect(page.locator('#blogs').getByText('Test blog 3')).not.toBeVisible()
       })
     })
   })
