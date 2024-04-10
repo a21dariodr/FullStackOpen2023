@@ -74,6 +74,26 @@ describe('Bloglist app', () => {
         await thirdBlogDiv.getByRole('button', { name: 'Remove' }).click()
         await expect(page.locator('#blogs').getByText('Test blog 3')).not.toBeVisible()
       })
+
+      describe('And there are more than one user', () => {
+        beforeEach(async ({ page, request }) => {
+          await request.post('/api/users', {
+            data: {
+              name: 'Pedro Pombo',
+              username: 'pepo4',
+              password: 'testpass2'
+            }
+          })
+          await page.getByRole('button', { name: 'Logout' }).click()
+        })
+
+        test('only the user that creates a note can delete it', async ({ page }) => {
+          await login(page, 'pepo4', 'testpass2')
+          const thirdBlogDiv = page.locator('#blogs').getByText('Test blog 3').locator('..')
+          await thirdBlogDiv.getByRole('button', { name: 'Show details' }).click()
+          await expect(thirdBlogDiv.getByRole('button', { name: 'Remove' })).not.toBeVisible()
+        })
+      })
     })
   })
 })
