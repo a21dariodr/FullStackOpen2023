@@ -38,14 +38,32 @@ describe('Bloglist app', () => {
     })
   })
 
-  describe('a logged in user', () => {
+  describe('A logged in user', () => {
     beforeEach(async ({ page }) => {
       await login(page, 'mperes2', 'testpass')
     })
 
     test('can create a new blog', async ({ page }) => {
       await createBlog(page, 'Test blog 1', 'Anonymous', 'http://fakeurl.test1.ru')
-      await expect(page.locator('.blogTitle')).toContainText('Test blog 1')
+      await expect(page.locator('.blogTitle').getByText('Test blog 1')).toBeVisible()
+    })
+
+    describe('When many note exists', () => {
+      beforeEach(async ({ page }) => {
+        await createBlog(page, 'Test blog 1', 'Anonymous', 'http://fakeurl.test1.ru')
+        await createBlog(page, 'Test blog 2', 'OtherAnonymous', 'http://fakeurl2.test1.ru')
+        await createBlog(page, 'Test blog 3', 'AnotherAnonymous', 'http://fakeurl3.test1.ru')
+        await createBlog(page, 'Test blog 4', 'OneMoreAnonymous', 'http://fakeurl4.test1.ru')
+      })
+
+      test('can like a blog', async ({ page }) => {
+        const secondBlogDiv = page.locator('#blogs').getByText('Test blog 2').locator('..')
+        await secondBlogDiv.getByRole('button', { name: 'Show details' }).click()
+        const secondBlogLikeButton = secondBlogDiv.getByRole('button', { name: 'Like' })
+        await secondBlogLikeButton.click()
+        await secondBlogLikeButton.click()
+        await expect(secondBlogDiv.locator('.blogLikes')).toContainText(/2$/)
+      })
     })
   })
 })

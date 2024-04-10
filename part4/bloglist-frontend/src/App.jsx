@@ -117,7 +117,7 @@ const App = () => {
   )
 
   const blogsList = () => (
-    <div>
+    <div id='blogs'>
       <h2>Blogs</h2>
       <div>{user.name} is logged in
         &nbsp;<button onClick={handleLogout}>Logout</button></div>
