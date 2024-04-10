@@ -1,7 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => state.sort((anecdote1, anecdote2) => {
+    return anecdote2.votes - anecdote1.votes
+  }))
   const dispatch = useDispatch()
 
   const vote = (id) => {
