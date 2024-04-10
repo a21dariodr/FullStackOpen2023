@@ -1,5 +1,6 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const { login, createBlog } = require('./bloglist-helper') 
+const { log } = require('console')
 
 describe('Bloglist app', () => {
   beforeEach(async ({ page, request }) => {
@@ -48,7 +49,7 @@ describe('Bloglist app', () => {
       await expect(page.locator('.blogTitle').getByText('Test blog 1')).toBeVisible()
     })
 
-    describe('When many notes exists', () => {
+    describe('When many notes exist', () => {
       beforeEach(async ({ page }) => {
         await createBlog(page, 'Test blog 1', 'Anonymous', 'http://fakeurl.test1.ru')
         await createBlog(page, 'Test blog 2', 'OtherAnonymous', 'http://fakeurl2.test1.ru')
@@ -73,6 +74,26 @@ describe('Bloglist app', () => {
         })
         await thirdBlogDiv.getByRole('button', { name: 'Remove' }).click()
         await expect(page.locator('#blogs').getByText('Test blog 3')).not.toBeVisible()
+      })
+
+      test('the blogs are ordered by number of likes', async ({ page }) => {
+        const secondBlogDiv = page.locator('#blogs').getByText('Test blog 2').locator('..')
+        await secondBlogDiv.getByRole('button', { name: 'Show details' }).click()
+        const secondBlogLikeButton = secondBlogDiv.getByRole('button', { name: 'Like' })
+        await secondBlogLikeButton.click()
+        await secondBlogLikeButton.click()
+        await secondBlogLikeButton.click()
+
+        const thirdBlogDiv = page.locator('#blogs').getByText('Test blog 3').locator('..')
+        await thirdBlogDiv.getByRole('button', { name: 'Show details' }).click()
+        const thirdBlogLikeButton = thirdBlogDiv.getByRole('button', { name: 'Like' })
+        await thirdBlogLikeButton.click()
+        await thirdBlogLikeButton.click()
+
+        const blogsDivs = await page.locator('.blog').all()
+        await expect(blogsDivs[0].locator('.blogTitle')).toContainText('Test blog 2')
+        await expect(blogsDivs[1].locator('.blogTitle')).toContainText('Test blog 3')
+        await expect(blogsDivs[2].locator('.blogTitle')).toContainText('Test blog 1')
       })
 
       describe('And there are more than one user', () => {
