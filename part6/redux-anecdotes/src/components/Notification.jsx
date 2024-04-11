@@ -9,7 +9,8 @@ const Notification = () => {
     borderWidth: 1,
     marginTop: 15,
     backgroundColor: 'coral',
-    color: 'white'
+    color: 'white',
+    display: notification ? '' : 'none'
   }
   return (
     <div style={style}>
