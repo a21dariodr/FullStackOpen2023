@@ -8,12 +8,12 @@ const sortAnecdotesByVotes = (anecdote1, anecdote2) => {
 const AnecdoteList = () => {
   const dispatch = useDispatch()
   const anecdotes = useSelector(({ anecdotes, filter }) => {
-    if (!filter) return anecdotes.sort(sortAnecdotesByVotes)
+    if (!filter) return [...anecdotes].sort(sortAnecdotesByVotes)
     else {
       const filteredAnecdotes = anecdotes.filter(anecdote =>
         anecdote.content.includes(filter)
       )
-      return filteredAnecdotes.sort(sortAnecdotesByVotes)
+      return [...filteredAnecdotes].sort(sortAnecdotesByVotes)
     }
   })
 
