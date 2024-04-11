@@ -26,8 +26,11 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'VOTE': {
       const anecdoteToVote = state.find(anecdote => anecdote.id === action.payload.id)
-      anecdoteToVote.votes++
-      return state.map(anecdote => anecdote.id !== anecdoteToVote.id ? anecdote : anecdoteToVote)
+      const votedAnecdote = {
+        ...anecdoteToVote,
+        votes: anecdoteToVote.votes + 1
+      }
+      return state.map(anecdote => anecdote.id !== votedAnecdote.id ? anecdote : votedAnecdote)
     }
     case 'ADD': {
       const newAnecdote = {
