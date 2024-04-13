@@ -39,6 +39,11 @@
       "id": "b9d3",
       "content": "new anecdote hahah",
       "votes": 2
+    },
+    {
+      "id": "488d",
+      "content": "new note for improved notifications",
+      "votes": 10
     }
   ]
 }
