@@ -26,6 +26,19 @@ const AnecdoteForm = () => {
           payload: ''
         })
       }, 5000)
+    },
+    onError: () => {
+      dispatchMessage({
+        type: 'setMessage',
+        payload: 'Too short anecdote, must have at least a length of 5 characters'
+      })
+    
+      setTimeout(() => {
+        dispatchMessage({
+          type: 'resetMessage',
+          payload: ''
+        })
+      }, 5000)
     }
   })
 
