@@ -7,4 +7,14 @@ const getAnecdotes = async () => {
   return response.data
 }
 
-export default { getAnecdotes }
+const createAnecdote = async anecdote => {
+  const response = await axios.post(baseUrl, anecdote)
+  return response.data
+}
+
+const modifyAnecdote = async anecdote => {
+  const response = await axios.put(`${baseUrl}/${anecdote.id}`, anecdote)
+  return response.data
+}
+
+export default { getAnecdotes, createAnecdote, modifyAnecdote }
