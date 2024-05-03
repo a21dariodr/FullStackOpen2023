@@ -9,5 +9,6 @@
   "jsxBracketSameLine": true,
   "noMultipleEmptyLines": true,
   "singleQuote": true,
-  "jsxSingleQuote": false
+  "jsxSingleQuote": false,
+  "editor.formatOnSave": true
 }

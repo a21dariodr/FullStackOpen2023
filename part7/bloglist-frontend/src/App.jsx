@@ -5,6 +5,8 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { useDispatch, useSelector } from 'react-redux'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,7 +14,8 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const [message, setMessage] = useState('')
+  const dispatch = useDispatch()
+  const message = useSelector( ({ notification }) => notification)
 
   const togglableRef = useRef()
 
@@ -51,10 +54,7 @@ const App = () => {
     } catch (exception) {
       console.log('Invalid username or password')
 
-      setMessage('Invalid username or password')
-      setTimeout(() => {
-        setMessage('')
-      }, 6000)
+      dispatch(setNotification('Invalid username or password', 6000))
     }
   }
 
@@ -70,10 +70,7 @@ const App = () => {
 
       togglableRef.current.toggleVisibility()
 
-      setMessage(`New blog "${createdBlog.title}" by ${createdBlog.author} added`)
-      setTimeout(() => {
-        setMessage('')
-      }, 6000)
+      dispatch(setNotification(`New blog "${createdBlog.title}" by ${createdBlog.author} added`, 6000))
     } catch (exception) {
       console.log('Error when creating new blog')
     }
