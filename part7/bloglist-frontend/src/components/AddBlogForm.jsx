@@ -1,14 +1,34 @@
 import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import blogService from '../services/blogs'
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../reducers/notificationReducer'
 
-const AddBlogForm = ({ createBlog, togglableRef }) => {
+const AddBlogForm = ({ togglableRef }) => {
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogUrl, setNewBlogUrl] = useState('')
 
+  const queryClient = useQueryClient()
+  const dispatch = useDispatch()
+
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.createBlog,
+    onSuccess: newBlog => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+      togglableRef.current.toggleVisibility()
+      dispatch(setNotification(`New blog "${newBlog.title}" by ${newBlog.author} added`, 6000))
+    },
+    onError: () => {
+      dispatch(setNotification('Error when adding new blog', 6000))
+    }
+  })
+
   const handleCreateBlog = event => {
     event.preventDefault()
 
-    createBlog({
+    newBlogMutation.mutate({
       title: newBlogTitle,
       author: newBlogAuthor,
       url: newBlogUrl

@@ -7,15 +7,19 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
+  const [blogsTMP, setBlogs] = useState([])
+
   const dispatch = useDispatch()
   const message = useSelector( ({ notification }) => notification)
+
+  const queryClient = useQueryClient()
 
   const togglableRef = useRef()
 
@@ -29,13 +33,17 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    if (user) {
-      blogService.getAll().then(blogs => {
-        setBlogs(sortBlogsByLikes(blogs))
-      })
-    }
-  }, [user])
+  const getBlogs = async () => {
+    const blogsData = await blogService.getAll()
+    return sortBlogsByLikes(blogsData)
+  }
+
+  const blogs = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getBlogs,
+    enabled: !!user,
+    retry: 1
+  })
 
   const sortBlogsByLikes = blogs => blogs.sort((a, b) => b.likes - a.likes)
 
@@ -61,19 +69,6 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem('loggedUser')
     setUser(null)
-  }
-
-  const createBlog = async newBlog => {
-    try {
-      const createdBlog = await blogService.createBlog({ title: newBlog.title, author: newBlog.author, url: newBlog.url })
-      setBlogs(blogs.concat(createdBlog))
-
-      togglableRef.current.toggleVisibility()
-
-      dispatch(setNotification(`New blog "${createdBlog.title}" by ${createdBlog.author} added`, 6000))
-    } catch (exception) {
-      console.log('Error when creating new blog')
-    }
   }
 
   const updateBlog = async modifiedBlog => {
@@ -123,9 +118,14 @@ const App = () => {
       </div>
       <br />
       <div>
-        {blogs.map(blog => (
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
-        ))}
+        {blogs.isLoading
+          ? (<p>Loading blogs</p>)
+          : blogs.isError
+            ? (<p>Error while loading blogs: {blogs.error.message}</p>)
+            :  blogs.data.map(blog => (
+              <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
+            ))
+        }
       </div>
     </div>
   )
@@ -133,7 +133,7 @@ const App = () => {
   const loggedUserContent = () => (
     <>
       <Togglable buttonLabel="Add blog" ref={togglableRef}>
-        <AddBlogForm createBlog={createBlog} togglableRef={togglableRef} />
+        <AddBlogForm togglableRef={togglableRef} />
       </Togglable>
       <Notification message={message} color={'green'} />
       {blogsList()}
