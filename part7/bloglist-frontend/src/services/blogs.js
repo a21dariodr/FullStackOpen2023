@@ -5,6 +5,8 @@ let token = null
 
 const setToken = newToken => (token = `Bearer ${newToken}`)
 
+const sortBlogsByLikes = blogs => blogs.sort((a, b) => b.likes - a.likes)
+
 const getAll = async () => {
   const config = {
     headers: {
@@ -46,6 +48,7 @@ const deleteBlog = async blogToDelete => {
   }
 
   await axios.delete(`${baseUrl}/${blogToDelete.id}`, config)
+  return blogToDelete
 }
 
-export default { getAll, createBlog, updateBlog, deleteBlog, setToken }
+export default { sortBlogsByLikes, getAll, createBlog, updateBlog, deleteBlog, setToken }

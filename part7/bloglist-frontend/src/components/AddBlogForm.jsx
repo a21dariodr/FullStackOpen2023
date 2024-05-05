@@ -18,9 +18,11 @@ const AddBlogForm = ({ togglableRef }) => {
       const blogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
       togglableRef.current.toggleVisibility()
+      console.log('New blog added')
       dispatch(setNotification(`New blog "${newBlog.title}" by ${newBlog.author} added`, 6000))
     },
     onError: () => {
+      console.log('Error when adding new blog')
       dispatch(setNotification('Error when adding new blog', 6000))
     }
   })

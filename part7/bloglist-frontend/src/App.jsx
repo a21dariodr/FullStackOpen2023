@@ -7,19 +7,15 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const [blogsTMP, setBlogs] = useState([])
-
   const dispatch = useDispatch()
   const message = useSelector( ({ notification }) => notification)
-
-  const queryClient = useQueryClient()
 
   const togglableRef = useRef()
 
@@ -35,7 +31,7 @@ const App = () => {
 
   const getBlogs = async () => {
     const blogsData = await blogService.getAll()
-    return sortBlogsByLikes(blogsData)
+    return blogService.sortBlogsByLikes(blogsData)
   }
 
   const blogs = useQuery({
@@ -44,8 +40,6 @@ const App = () => {
     enabled: !!user,
     retry: 1
   })
-
-  const sortBlogsByLikes = blogs => blogs.sort((a, b) => b.likes - a.likes)
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -69,26 +63,6 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem('loggedUser')
     setUser(null)
-  }
-
-  const updateBlog = async modifiedBlog => {
-    try {
-      await blogService.updateBlog(modifiedBlog)
-      const filteredBlogs = blogs.filter(blog => blog.id !== modifiedBlog.id)
-      setBlogs(sortBlogsByLikes(filteredBlogs.concat(modifiedBlog)))
-    } catch (exception) {
-      console.log('Error when updating the blog')
-    }
-  }
-
-  const deleteBlog = async blogToDelete => {
-    try {
-      await blogService.deleteBlog(blogToDelete)
-      const filteredBlogs = blogs.filter(blog => blog.id !== blogToDelete.id)
-      setBlogs(sortBlogsByLikes(filteredBlogs))
-    } catch (exception) {
-      console.log('Error when deleting the blog')
-    }
   }
 
   const loginForm = () => (
@@ -123,7 +97,7 @@ const App = () => {
           : blogs.isError
             ? (<p>Error while loading blogs: {blogs.error.message}</p>)
             :  blogs.data.map(blog => (
-              <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />
+              <Blog key={blog.id} blog={blog} />
             ))
         }
       </div>

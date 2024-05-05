@@ -1,8 +1,12 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlog, deleteBlog }) => {
+const Blog = ({ blog }) => {
   const [showDetails, setShowDetails] = useState(false)
+
+  const queryClient = useQueryClient()
 
   const blogStyle = {
     paddingTop: 10,
@@ -23,13 +27,33 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
 
   const user = JSON.parse(localStorage.getItem('loggedUser'))
 
+  const likeBlogMutation = useMutation({
+    mutationFn: blogService.updateBlog,
+    onSuccess: updatedBlog => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      const filteredBlogs = blogs.filter(blog => blog.id !== updatedBlog.id)
+      queryClient.setQueryData(['blogs'], blogService.sortBlogsByLikes(filteredBlogs.concat(updatedBlog)))
+    },
+    onError: () => console.log('Error when updating the blog')
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onSuccess: deletedBlog => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      const filteredBlogs = blogs.filter(blog => blog.id !== deletedBlog.id)
+      queryClient.setQueryData(['blogs'], blogService.sortBlogsByLikes(filteredBlogs))
+    },
+    onError: () => console.log('Error when deleting the blog')
+  })
+
   const handleLike = () => {
     blog.likes += 1
-    updateBlog(blog)
+    likeBlogMutation.mutate(blog)
   }
 
   const handleRemove = () => {
-    if (window.confirm(`Blog "${blog.title}" by ${blog.author} is about to be deleted!`)) deleteBlog(blog)
+    if (window.confirm(`Blog "${blog.title}" by ${blog.author} is about to be deleted!`)) deleteBlogMutation.mutate(blog)
   }
 
   return (
@@ -62,9 +86,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired
+  blog: PropTypes.object.isRequired
 }
 
 export default Blog
