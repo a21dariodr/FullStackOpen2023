@@ -18,7 +18,7 @@ export const { setMessage, resetMessage } = notificationSlice.actions
 export default notificationSlice.reducer
 
 export const setNotification = (message, time) => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(setMessage(message))
     setTimeout(() => {
       dispatch(resetMessage())

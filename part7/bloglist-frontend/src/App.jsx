@@ -1,33 +1,28 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import AddBlogForm from './components/AddBlogForm'
+import LoginForm from './components/LoginForm'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
-import loginService from './services/login'
-import { useDispatch, useSelector } from 'react-redux'
-import { setNotification } from './reducers/notificationReducer'
+import { useSelector, useDispatch } from 'react-redux'
 import { useQuery } from '@tanstack/react-query'
+import { setUser } from './reducers/userReducer'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
+  const message = useSelector(({ notification }) => notification)
+  const user = useSelector(({ user }) => user.loggedUser)
   const dispatch = useDispatch()
-  const message = useSelector( ({ notification }) => notification)
-
   const togglableRef = useRef()
 
   useEffect(() => {
     const userJSON = localStorage.getItem('loggedUser')
-
     if (userJSON) {
-      const user = JSON.parse(userJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      const storagedUser = JSON.parse(userJSON)
+      dispatch(setUser(storagedUser))
+      blogService.setToken(storagedUser.token)
     }
-  }, [])
+  }, [dispatch])
 
   const getBlogs = async () => {
     const blogsData = await blogService.getAll()
@@ -41,48 +36,10 @@ const App = () => {
     retry: 1
   })
 
-  const handleLogin = async event => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({ username, password })
-
-      console.log('Logging in with', username, password)
-      blogService.setToken(user.token)
-      localStorage.setItem('loggedUser', JSON.stringify(user))
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      console.log('Invalid username or password')
-
-      dispatch(setNotification('Invalid username or password', 6000))
-    }
-  }
-
   const handleLogout = () => {
     localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(setUser(null))
   }
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <h2>Log in to application</h2>
-      <Notification message={message} color={'red'} />
-      <div>
-        <span>Username </span>
-        <input data-testid="username" type="text" value={username} onChange={({ target }) => setUsername(target.value)} name="username" />
-      </div>
-      <div>
-        <span>Password </span>
-        <input data-testid="password" type="password" value={password} onChange={({ target }) => setPassword(target.value)} name="password" />
-      </div>
-      <br />
-      <button data-testid="submitButton" type="submit">
-        Login
-      </button>
-    </form>
-  )
 
   const blogsList = () => (
     <div id="blogs">
@@ -91,16 +48,7 @@ const App = () => {
         {user.name} is logged in &nbsp;<button onClick={handleLogout}>Logout</button>
       </div>
       <br />
-      <div>
-        {blogs.isLoading
-          ? (<p>Loading blogs</p>)
-          : blogs.isError
-            ? (<p>Error while loading blogs: {blogs.error.message}</p>)
-            :  blogs.data.map(blog => (
-              <Blog key={blog.id} blog={blog} />
-            ))
-        }
-      </div>
+      <div>{blogs.isLoading ? <p>Loading blogs</p> : blogs.isError ? <p>Error while loading blogs: {blogs.error.message}</p> : blogs.data.map(blog => <Blog key={blog.id} blog={blog} />)}</div>
     </div>
   )
 
@@ -117,7 +65,7 @@ const App = () => {
   return (
     <>
       <h1>Bloglist app</h1>
-      {user ? loggedUserContent() : loginForm()}
+      {user ? loggedUserContent() : (<LoginForm />)}
     </>
   )
 }
