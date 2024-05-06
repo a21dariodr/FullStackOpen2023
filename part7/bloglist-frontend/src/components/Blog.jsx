@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
 import { useMatch } from 'react-router-dom'
+import CommentBlogForm from './AddCommentForm'
 
 const Blog = () => {
   const queryClient = useQueryClient()
@@ -79,6 +80,7 @@ const Blog = () => {
         ''
       )}
       <h3>Comments</h3>
+      <CommentBlogForm blogId={blog.id}/>
       <ul>
         {blog.comments.map(comment => (
           <li key={comment}>{comment}</li>

@@ -9,7 +9,7 @@ const setToken = newToken => (token = `Bearer ${newToken}`)
 
 const sortBlogsByLikes = blogs => blogs.sort((a, b) => b.likes - a.likes)
 
-const getAll = async () => {
+const getAllBlogs = async () => {
   const config = {
     headers: {
       Authorization: token
@@ -53,8 +53,19 @@ const deleteBlog = async blogToDelete => {
   return blogToDelete
 }
 
+const commentBlog = async ({ blogId, comment }) => {
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await axios.post(`${baseUrl}/${blogId}/comments`, { comment }, config)
+  return response.data
+}
+
 const getBlogs = async () => {
-  const blogsData = await getAll()
+  const blogsData = await getAllBlogs()
   return sortBlogsByLikes(blogsData)
 }
 
@@ -70,4 +81,4 @@ export const useBlogs = () => {
   return blogs
 }
 
-export default { sortBlogsByLikes, getAll, createBlog, updateBlog, deleteBlog, setToken, useBlogs }
+export default { sortBlogsByLikes, getAllBlogs, createBlog, updateBlog, deleteBlog, setToken, commentBlog, useBlogs }
