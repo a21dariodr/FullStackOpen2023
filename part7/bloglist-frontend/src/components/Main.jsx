@@ -1,8 +1,9 @@
-import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUser } from '../reducers/userReducer'
 import Notification from '../components/Notification'
 import Users from './Users'
+import User from './User'
 
 const Main = () => {
   const dispatch = useDispatch()
@@ -23,6 +24,7 @@ const Main = () => {
       <button onClick={handleLogout}>Logout</button>
       <Routes>
         <Route path='/' element={<Users/>} />
+        <Route path='/users/:id' element={<User/>} />
       </Routes>
     </div>
   )

@@ -1,17 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
-import usersService from '../services/users'
+import { Link } from 'react-router-dom'
+import { useUsers } from '../services/users'
 
 const Users = () => {
-  const getUsers = async () => {
-    const usersData = await usersService.getAllUsers()
-    return usersService.sortUsersByName(usersData)
-  }
-
-  const users = useQuery({
-    queryKey: ['users'],
-    queryFn: getUsers,
-    retry: 1
-  })
+  const users = useUsers()
 
   return (
     <>
@@ -32,7 +23,11 @@ const Users = () => {
             {users.data.map(user => {
               return (
                 <tr key={user.username}>
-                  <td>{user.name}</td>
+                  <td>
+                    <Link to={`/users/${user.id}`}>
+                      {user.name}
+                    </Link>
+                  </td>
                   <td>{user.blogs.length}</td>
                 </tr>
               )

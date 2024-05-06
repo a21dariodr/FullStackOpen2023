@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
 
 const baseUrl = '/api/users'
 
@@ -9,4 +10,18 @@ const getAllUsers = async () => {
   return response.data
 }
 
-export default { sortUsersByName, getAllUsers }
+const getUsers = async () => {
+  const usersData = await getAllUsers()
+  return sortUsersByName(usersData)
+}
+
+export const useUsers = () => {
+  const users = useQuery({
+    queryKey: ['users'],
+    queryFn: getUsers,
+    retry: 1
+  })
+  return users
+}
+
+export default { sortUsersByName, useUsers }

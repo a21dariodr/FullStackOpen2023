@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux'
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-const baseUrl = '/api/blogs'
 
+const baseUrl = '/api/blogs'
 let token = null
 
 const setToken = newToken => (token = `Bearer ${newToken}`)
@@ -51,4 +53,21 @@ const deleteBlog = async blogToDelete => {
   return blogToDelete
 }
 
-export default { sortBlogsByLikes, getAll, createBlog, updateBlog, deleteBlog, setToken }
+const getBlogs = async () => {
+  const blogsData = await getAll()
+  return sortBlogsByLikes(blogsData)
+}
+
+export const useBlogs = () => {
+  const user = useSelector(({ user }) => user.loggedUser)
+
+  const blogs = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getBlogs,
+    enabled: !!user,
+    retry: 1
+  })
+  return blogs
+}
+
+export default { sortBlogsByLikes, getAll, createBlog, updateBlog, deleteBlog, setToken, useBlogs }
