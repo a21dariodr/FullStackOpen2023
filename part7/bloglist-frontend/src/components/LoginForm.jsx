@@ -15,22 +15,25 @@ const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <h2>Log in to application</h2>
-      <Notification message={message} color={'red'} />
-      <div>
-        <span>Username </span>
-        <input data-testid="username" type="text" value={username} onChange={({ target }) => dispatch(setUsername(target.value))} name="username" />
-      </div>
-      <div>
-        <span>Password </span>
-        <input data-testid="password" type="password" value={password} onChange={({ target }) => dispatch(setPassword(target.value))} name="password" />
-      </div>
-      <br />
-      <button data-testid="submitButton" type="submit">
-        Login
-      </button>
-    </form>
+    <div>
+      <h1>Bloglist app</h1>
+      <form onSubmit={handleLogin}>
+        <h2>Log in to application</h2>
+        <Notification message={message} color={'red'} />
+        <div>
+          <span>Username </span>
+          <input data-testid="username" type="text" value={username} onChange={({ target }) => dispatch(setUsername(target.value))} name="username" />
+        </div>
+        <div>
+          <span>Password </span>
+          <input data-testid="password" type="password" value={password} onChange={({ target }) => dispatch(setPassword(target.value))} name="password" />
+        </div>
+        <br />
+        <button data-testid="submitButton" type="submit">
+          Login
+        </button>
+      </form>
+    </div>
   )
 }
 

@@ -20,7 +20,6 @@ const App = () => {
 
   return (
     <>
-      <h1>Bloglist app</h1>
       {user ? <Main/> : <LoginForm />}
     </>
   )

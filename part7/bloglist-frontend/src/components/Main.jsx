@@ -1,34 +1,25 @@
 import { Routes, Route } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { setUser } from '../reducers/userReducer'
+import { useSelector } from 'react-redux'
 import Blog from './Blog'
 import Bloglist from './Bloglist'
 import Notification from '../components/Notification'
+import Topbar from './Topbar'
 import Users from './Users'
 import User from './User'
 
 const Main = () => {
-  const dispatch = useDispatch()
-
-  const user = useSelector(({ user }) => user.loggedUser)
-  const message = useSelector(({ notification }) => notification)
-
-  const handleLogout = () => {
-    localStorage.removeItem('loggedUser')
-    dispatch(setUser(null))
-  }
+  const notificationMessage = useSelector(({ notification }) => notification)
 
   return (
     <div>
-      <Notification message={message} color={'green'} />
-      {user.name} is logged in
-      <br/><br/>
-      <button onClick={handleLogout}>Logout</button>
+      <Topbar/>
+      <h1>Bloglist app</h1>
+      <Notification message={notificationMessage} color={'green'} />
       <Routes>
-        <Route path='/' element={<Users/>} />
-        <Route path='/users/:id' element={<User/>} />
-        <Route path='/blogs' element={<Bloglist/>} />
+        <Route path='/' element={<Bloglist/>} />
         <Route path='/blogs/:id' element={<Blog/>} />
+        <Route path='/users' element={<Users/>} />
+        <Route path='/users/:id' element={<User/>} />
       </Routes>
     </div>
   )
