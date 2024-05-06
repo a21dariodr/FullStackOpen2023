@@ -1,30 +1,11 @@
-import { useState } from 'react'
-import PropTypes from 'prop-types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
+import { useMatch } from 'react-router-dom'
 
-const Blog = ({ blog }) => {
-  const [showDetails, setShowDetails] = useState(false)
-
+const Blog = () => {
   const queryClient = useQueryClient()
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 8,
-    paddingBottom: 6,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const removeButtonStyle = {
-    color: 'white',
-    backgroundColor: 'navy',
-    border: 'none',
-    padding: 4,
-    marginTop: 6
-  }
-
+  const blogId = useMatch('/blogs/:id').params.id
+  const blogs = blogService.useBlogs()
   const user = JSON.parse(localStorage.getItem('loggedUser'))
 
   const likeBlogMutation = useMutation({
@@ -47,6 +28,28 @@ const Blog = ({ blog }) => {
     onError: () => console.log('Error when deleting the blog')
   })
 
+  if (blogs.isLoading)
+    return (<p>Loading blogs...</p>)
+
+  const blog = blogs.data.find(blog => blog.id === blogId)
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 8,
+    paddingBottom: 6,
+    border: 'solid',
+    borderWidth: 1,
+    marginTop: 5
+  }
+
+  const removeButtonStyle = {
+    color: 'white',
+    backgroundColor: 'navy',
+    border: 'none',
+    padding: 4,
+    marginTop: 6
+  }
+
   const handleLike = () => {
     blog.likes += 1
     likeBlogMutation.mutate(blog)
@@ -58,35 +61,25 @@ const Blog = ({ blog }) => {
 
   return (
     <div className="blog" style={blogStyle}>
-      <span className="blogTitle">{blog.title}</span> - <span className="blogAuthor">{blog.author}</span>&nbsp;
-      <button onClick={() => setShowDetails(!showDetails)}>{showDetails ? 'Hide details' : 'Show details'}</button>
-      {showDetails ? (
-        <>
-          <br />
-          <br />
-          <span className="blogUrl">URL: {blog.url}</span>
-          <br />
-          <span className="blogLikes">Likes: {blog.likes}</span> <button onClick={handleLike}>Like</button>
-          <br />
-          <span className="blogUser">User: {blog.user.name}</span>
-          <br />
-          {user.username === blog.user.username ? (
-            <button style={removeButtonStyle} onClick={handleRemove}>
-              Remove
-            </button>
-          ) : (
-            ''
-          )}
-        </>
+      <h2>
+        <span className="blogTitle">{blog.title}</span> - <span className="blogAuthor">{blog.author}</span>
+      </h2>
+
+      <a href={blog.url} className="blogUrl">URL: {blog.url}</a>
+      <br />
+      <span className="blogLikes">{blog.likes} likes </span> <button onClick={handleLike}>Like</button>
+      <br />
+      <span className="blogUser">Added by {blog.user.name}</span>
+      <br />
+      {user.username === blog.user.username ? (
+        <button style={removeButtonStyle} onClick={handleRemove}>
+          Remove
+        </button>
       ) : (
         ''
       )}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired
 }
 
 export default Blog
