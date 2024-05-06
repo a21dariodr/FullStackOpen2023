@@ -16,6 +16,7 @@ blogRouter.post('/', async (request, response) => {
     const user = request.user
 
     blog.user = user.id
+    blog.comments = []
 
     const newBlog = await blog.save()
 
@@ -61,5 +62,7 @@ blogRouter.delete('/:id', async (request, response) => {
 
   response.status(204).end()
 })
+
+blogRouter.post('/:id/comments', async (request, response) => {})
 
 module.exports = blogRouter

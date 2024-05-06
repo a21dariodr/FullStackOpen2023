@@ -1,0 +1,56 @@
+POST http://localhost:3001/api/login
+content-type: application/json
+
+{
+    "username": "nlin4575",
+    "password": "testpass"
+}
+
+###
+
+GET http://localhost:3001/api/blogs
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5saW40NTc1IiwiaWQiOiI2NWZjODk3MDVkYWY3MGI5MGYyNjU3OTMiLCJpYXQiOjE3MTEwNTQ2MTJ9.9pf1pRV3cdUOKxZ7WlCwPQrmVVFHsRoNXvkdP2uTFMI
+
+###
+
+POST http://localhost:3001/api/blogs
+content-type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5saW40NTc1IiwiaWQiOiI2NWZjODk3MDVkYWY3MGI5MGYyNjU3OTMiLCJpYXQiOjE3MTEwNTQ2MTJ9.9pf1pRV3cdUOKxZ7WlCwPQrmVVFHsRoNXvkdP2uTFMI
+
+{
+    "title": "Quantumania",
+    "author": "Pedro Salinas",
+    "url": "https://quantumania.es",
+    "likes": 13
+}
+
+###
+
+DELETE http://localhost:3001/api/blogs/65fc89955daf70b90f26579e
+content-type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5saW40NTc1IiwiaWQiOiI2NWZjODk3MDVkYWY3MGI5MGYyNjU3OTMiLCJpYXQiOjE3MTEwNTQ2MTJ9.9pf1pRV3cdUOKxZ7WlCwPQrmVVFHsRoNXvkdP2uTFMI
+
+###
+
+GET http://localhost:3001/api/users
+
+###
+
+POST http://localhost:3001/api/users
+content-type: application/json
+
+{
+    "name": "Nuria",
+    "username": "nlin4575",
+    "password": "testpass"
+}
+
+###
+
+POST http://localhost:3001/api/users
+content-type: application/json
+
+{
+    "name": "Nuria",
+    "username": "nlin4575"
+}
