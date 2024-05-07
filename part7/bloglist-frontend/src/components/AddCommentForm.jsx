@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
+import { Button, TextField } from '@mui/material'
 
 const CommentBlogForm = ({ blogId }) => {
   const [comment, setComment] = useState('')
@@ -28,8 +29,8 @@ const CommentBlogForm = ({ blogId }) => {
     <div>
       <form onSubmit={handleCommentBlog}>
         <div>
-          <input type="text" value={comment} onChange={({ target }) => setComment(target.value)} />
-          <button type="submit">Add comment</button>
+          <TextField size="small" value={comment} onChange={({ target }) => setComment(target.value)} />
+          <Button variant="contained" color="primary" type="submit">Add comment</Button>
         </div>
       </form>
     </div>

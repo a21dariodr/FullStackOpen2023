@@ -6,6 +6,7 @@ import Notification from '../components/Notification'
 import Topbar from './Topbar'
 import Users from './Users'
 import User from './User'
+import { Typography } from '@mui/material'
 
 const Main = () => {
   const notificationMessage = useSelector(({ notification }) => notification)
@@ -13,7 +14,7 @@ const Main = () => {
   return (
     <div>
       <Topbar/>
-      <h1>Bloglist app</h1>
+      <Typography variant="h2" align='center' p={2}>Bloglist app</Typography>
       <Notification message={notificationMessage} color={'green'} />
       <Routes>
         <Route path='/' element={<Bloglist/>} />

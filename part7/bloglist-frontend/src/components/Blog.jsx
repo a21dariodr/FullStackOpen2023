@@ -1,10 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
-import { useMatch } from 'react-router-dom'
+import { useMatch, useNavigate } from 'react-router-dom'
 import CommentBlogForm from './AddCommentForm'
+import { Box, Button, Typography } from '@mui/material'
 
 const Blog = () => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const blogId = useMatch('/blogs/:id').params.id
   const blogs = blogService.useBlogs()
   const user = JSON.parse(localStorage.getItem('loggedUser'))
@@ -22,6 +24,7 @@ const Blog = () => {
   const deleteBlogMutation = useMutation({
     mutationFn: blogService.deleteBlog,
     onSuccess: deletedBlog => {
+      navigate('/')
       const blogs = queryClient.getQueryData(['blogs'])
       const filteredBlogs = blogs.filter(blog => blog.id !== deletedBlog.id)
       queryClient.setQueryData(['blogs'], blogService.sortBlogsByLikes(filteredBlogs))
@@ -36,19 +39,16 @@ const Blog = () => {
 
   const blogStyle = {
     paddingTop: 10,
-    paddingLeft: 8,
+    paddingLeft: 20,
     paddingBottom: 6,
     border: 'solid',
     borderWidth: 1,
     marginTop: 5
   }
 
-  const removeButtonStyle = {
-    color: 'white',
-    backgroundColor: 'navy',
-    border: 'none',
-    padding: 4,
-    marginTop: 6
+  const linkStyle = {
+    textDecoration: 'none',
+    color: 'blue'
   }
 
   const handleLike = () => {
@@ -62,24 +62,29 @@ const Blog = () => {
 
   return (
     <div className="blog" style={blogStyle}>
-      <h2>
+      <Typography variant="h4" align='center' p={3}>
         <span className="blogTitle">{blog.title}</span> - <span className="blogAuthor">{blog.author}</span>
-      </h2>
+      </Typography>
 
-      <a href={blog.url} className="blogUrl">URL: {blog.url}</a>
-      <br />
-      <span className="blogLikes">{blog.likes} likes </span> <button onClick={handleLike}>Like</button>
-      <br />
-      <span className="blogUser">Added by {blog.user.name}</span>
-      <br />
+      <Box p>
+        <a href={blog.url} target='_blank' rel='noreferrer' className="blogUrl" style={linkStyle}>URL: {blog.url}</a>
+      </Box>
+      <Box p>
+        <span className="blogLikes">{blog.likes} likes </span> <button onClick={handleLike}>Like</button>
+      </Box>
+      <Box p>
+        <span className="blogUser">Added by {blog.user.name}</span>
+      </Box>
       {user.username === blog.user.username ? (
-        <button style={removeButtonStyle} onClick={handleRemove}>
-          Remove
-        </button>
+        <Box p={2}>
+          <Button variant="contained" color="secondary" size='small' onClick={handleRemove}>
+            Remove
+          </Button>
+        </Box>
       ) : (
         ''
       )}
-      <h3>Comments</h3>
+      <Typography variant="h5" paddingBlock={2}>Comments</Typography>
       <CommentBlogForm blogId={blog.id}/>
       <ul>
         {blog.comments.map(comment => (

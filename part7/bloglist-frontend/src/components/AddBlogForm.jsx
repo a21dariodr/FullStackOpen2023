@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
 import { useDispatch } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
+import { Box, Button, TextField, Typography } from '@mui/material'
 
 const AddBlogForm = ({ togglableRef }) => {
   const [newBlogTitle, setNewBlogTitle] = useState('')
@@ -44,25 +45,21 @@ const AddBlogForm = ({ togglableRef }) => {
   return (
     <div>
       <form onSubmit={handleCreateBlog}>
-        <h2>Create blog</h2>
+        <Typography variant="h5" p={2}>Create blog</Typography>
+        <Box p={1}>
+          <TextField label="Title" InputLabelProps={{ shrink: true }} size="small" data-testid="newBlogTitle" type="text" value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name="newBlogTitle" id="blogTitle" />
+        </Box>
+        <Box p={1}>
+          <TextField label="Author" InputLabelProps={{ shrink: true }} size="small" data-testid="newBlogAuthor" type="text" value={newBlogAuthor} onChange={({ target }) => setNewBlogAuthor(target.value)} name="newBlogAuthor" id="blogAuthor" />
+        </Box>
+        <Box p={1}>
+          <TextField label="URL" InputLabelProps={{ shrink: true }} size="small" data-testid="newBlogUrl" type="text" value={newBlogUrl} onChange={({ target }) => setNewBlogUrl(target.value)} name="newBlogUrl" id="blogUrl" />
+        </Box>
         <div>
-          <span>Title </span>
-          <input data-testid="newBlogTitle" type="text" value={newBlogTitle} onChange={({ target }) => setNewBlogTitle(target.value)} name="newBlogTitle" id="blogTitle" />
-        </div>
-        <div>
-          <span>Author </span>
-          <input data-testid="newBlogAuthor" type="text" value={newBlogAuthor} onChange={({ target }) => setNewBlogAuthor(target.value)} name="newBlogAuthor" id="blogAuthor" />
-        </div>
-        <div>
-          <span>URL </span>
-          <input data-testid="newBlogUrl" type="text" value={newBlogUrl} onChange={({ target }) => setNewBlogUrl(target.value)} name="newBlogUrl" id="blogUrl" />
-        </div>
-        <br />
-        <div>
-          <button type="submit">Save blog</button>&nbsp;
-          <button type="button" onClick={() => togglableRef.current.toggleVisibility()}>
+          <Button variant="contained" color="primary" type="submit">Save blog</Button>&nbsp;
+          <Button variant="contained" color="secondary" type="button" onClick={() => togglableRef.current.toggleVisibility()}>
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </div>
