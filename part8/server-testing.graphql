@@ -1,0 +1,14 @@
+query ExampleQuery {
+  authorCount
+  bookCount
+  allBooks {
+    title 
+    author
+    published 
+    genres
+  }
+  allAuthors {
+    name
+    bookCount
+  }
+}
