@@ -1,11 +1,14 @@
 query ExampleQuery {
   authorCount
   bookCount
-  allBooks {
+  allBooksWithoutAuthor: allBooks {
     title 
     author
     published 
     genres
+  }
+  allBooksWithAuthor: allBooks(author: "Robert Martin") {
+    title
   }
   allAuthors {
     name
