@@ -10,6 +10,14 @@ query ExampleQuery {
   allBooksWithAuthor: allBooks(author: "Robert Martin") {
     title
   }
+  allBooksWithGenre: allBooks(genre: "refactoring") {
+    title
+    author
+  }
+  allBooksWithAuthorAndGenre: allBooks(author: "Robert Martin", genre: "refactoring") {
+    title
+    author
+  }
   allAuthors {
     name
     bookCount
