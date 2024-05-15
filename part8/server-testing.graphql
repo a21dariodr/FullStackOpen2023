@@ -55,3 +55,17 @@ query {
     bookCount
   }
 }
+
+mutation {
+  editAuthor(name: "Joshua Kerievsky", setBornTo: 2023) {
+    name
+    born
+  }
+}
+
+mutation {
+  editAuthor(name: "Me", setBornTo: 2023) {
+    name
+    born
+  }
+}
