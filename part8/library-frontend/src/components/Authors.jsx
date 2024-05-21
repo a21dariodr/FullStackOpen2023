@@ -11,7 +11,7 @@ const Authors = (props) => {
 
   if (authors.loading) return (
     <div>
-      Loading data...
+      Loading authors...
     </div>
   )
 
