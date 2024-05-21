@@ -5,7 +5,7 @@ import Select from 'react-select'
 import { UPDATE_AUTHOR_BIRTHDATE, ALL_AUTHORS } from "../queries"
 
 const BirthyearForm = ({ authors }) => {
-  const [selectedAuthor, setSelectedAuthor] = useState(null)
+  const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
   const [updateBirthdate] = useMutation(UPDATE_AUTHOR_BIRTHDATE, {
@@ -21,7 +21,7 @@ const BirthyearForm = ({ authors }) => {
 
     console.log('updating author...');
 
-    updateBirthdate({ variables: { name: selectedAuthor.value, birthdate: Number(born) } })
+    updateBirthdate({ variables: { name, birthdate: Number(born) } })
   }
 
   return (
@@ -31,7 +31,7 @@ const BirthyearForm = ({ authors }) => {
         <Select
           options={selectOptions}
           placeholder={'Select author'}
-          onChange={setSelectedAuthor}
+          onChange={option => setName(option.value)}
         />
         <div>
           born{' '}
