@@ -135,15 +135,31 @@ const typeDefs = `
 
 const resolvers = {
   Author: {
-    bookCount: async (root) => books.filter(book => book.author === root.name).length
+    bookCount: async (root) => {
+      const authorBooks = await Book.find({ author: root._id })
+      return authorBooks.length
+    }
+  },
+  Book: {
+    author: async (root) => {
+      const author = await Author.findById(root.author)
+      return author
+    }
   },
   Query: {
     allAuthors: async () => Author.find({}),
     allBooks: async (root, args) => {
       if (!args.author && !args.genre) return Book.find({})
-      if (args.author && !args.genre) return books.filter(book => book.author === args.author)
-      if (args.genre && !args.author) return books.filter(book => book.genres.includes(args.genre))
-      return books.filter(book => book.author === args.author && book.genres.includes(args.genre))
+      if (args.author && !args.genre) {
+        const author = await Author.findOne({ name: args.author })
+        if (!author) return []
+        else return Book.find({ author: author._id })
+      }
+      if (args.genre && !args.author) return Book.find({ genres: args.genre })
+      
+      const author = await Author.findOne({ name: args.author })
+      if (!author) return []
+      return Book.find({ author: author._id, genres: args.genre })
     },
     authorCount: async () => Author.collection.countDocuments(),
     bookCount: async () => Book.collection.countDocuments()
@@ -190,16 +206,24 @@ const resolvers = {
       return newBook
     },
     editAuthor: async (root, args) => {
-      const author = authors.find(author => author.name === args.name)
+      const author = await Author.findOne({ name: args.name })
       if (!author) return null
 
-      const updatedAuthor = {
-        ...author,
-        born: args.setBornTo
-      }
-      authors = authors.map(author => author.name === args.name ? updatedAuthor : author)
+      author.born = args.setBornTo
 
-      return updatedAuthor
+      try {
+        await author.save()
+      } catch (error) {
+        throw new GraphQLError('Error when updating author', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error
+          }
+        })
+      }
+
+      return author
     }
   }
 }

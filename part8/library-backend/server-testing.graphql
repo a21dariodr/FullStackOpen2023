@@ -3,7 +3,10 @@ query ExampleQuery {
   bookCount
   allBooksWithoutAuthor: allBooks {
     title 
-    author
+    author {
+      name
+      born
+    }
     published 
     genres
   }
@@ -12,11 +15,17 @@ query ExampleQuery {
   }
   allBooksWithGenre: allBooks(genre: "refactoring") {
     title
-    author
+    author {
+      name
+      born
+    }
   }
   allBooksWithAuthorAndGenre: allBooks(author: "Robert Martin", genre: "refactoring") {
     title
-    author
+    author {
+      name
+      born
+    }
   }
   allAuthors {
     name
