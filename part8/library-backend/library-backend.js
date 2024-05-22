@@ -166,6 +166,26 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
+      if (args.title.length < 3) {
+        throw new GraphQLError('The title has to be longer than 3 characters', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+            error
+          }
+        })
+      }
+
+      if (args.published > new Date().getFullYear()) {
+        throw new GraphQLError('The publication year is greater than current year!', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.published,
+            error
+          }
+        })
+      }
+
       const newBook = new Book({ ...args })
 
       const author = await Author.findOne({ name: args.author })
@@ -208,6 +228,16 @@ const resolvers = {
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name })
       if (!author) return null
+
+      if (args.setBornTo > new Date().getFullYear()) {
+        throw new GraphQLError('Maximum born year is this year', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.setBornTo,
+            error
+          }
+        })
+      }
 
       author.born = args.setBornTo
 
