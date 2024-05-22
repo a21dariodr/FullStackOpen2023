@@ -73,8 +73,28 @@ mutation {
 }
 
 mutation {
-  editAuthor(name: "Me", setBornTo: 2023) {
+  editAuthor(name: "Reijo Mäki", setBornTo: 2023) {
     name
     born
+  }
+}
+
+mutation {
+  createUser (
+    username: "Peter peterson",
+    favoriteGenre: "crime"
+  ) {
+    username
+    favoriteGenre
+    id
+  }
+}
+
+mutation {
+  login (
+    username: "Peter peterson"
+    password: "secret"
+  ) {
+    value
   }
 }

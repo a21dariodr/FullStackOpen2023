@@ -6,6 +6,9 @@ const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 const Author = require('./models/author')
 const Book = require('./models/book')
+const User = require('./models/user')
+
+const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
 
@@ -113,11 +116,20 @@ const typeDefs = `
     id: ID!
     genres: [String!]!
   }
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+  type Token {
+    value: String!
+  }  
   type Query {
     allAuthors: [Author!]!
     allBooks (author: String, genre: String): [Book!]!
     authorCount: Int!
     bookCount: Int!
+    me: User
   }
   type Mutation {
     addBook(
@@ -130,6 +142,14 @@ const typeDefs = `
       name: String!
       setBornTo: Int!
     ): Author
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
@@ -162,10 +182,21 @@ const resolvers = {
       return Book.find({ author: author._id, genres: args.genre })
     },
     authorCount: async () => Author.collection.countDocuments(),
-    bookCount: async () => Book.collection.countDocuments()
+    bookCount: async () => Book.collection.countDocuments(),
+    me: (root, args, { currentUser }) => currentUser
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      const currentUser = context.currentUser
+
+      if (!currentUser) {
+        throw new GraphQLError('User not authenticated', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          }
+        })
+      }
+
       if (args.title.length < 3) {
         throw new GraphQLError('The title has to be longer than 3 characters', {
           extensions: {
@@ -225,19 +256,19 @@ const resolvers = {
 
       return newBook
     },
-    editAuthor: async (root, args) => {
-      const author = await Author.findOne({ name: args.name })
-      if (!author) return null
+    editAuthor: async (root, args, context) => {
+      const currentUser = context.currentUser
 
-      if (args.setBornTo > new Date().getFullYear()) {
-        throw new GraphQLError('Maximum born year is this year', {
+      if (!currentUser) {
+        throw new GraphQLError('User not authenticated', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.setBornTo,
-            error
           }
         })
       }
+
+      const author = await Author.findOne({ name: args.name })
+      if (!author) return null
 
       author.born = args.setBornTo
 
@@ -254,17 +285,59 @@ const resolvers = {
       }
 
       return author
-    }
+    },
+    createUser: async (root, args) => {
+      const user = new User({ ...args })
+  
+      return user.save()
+        .catch(error => {
+          throw new GraphQLError('Error when creating user', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.username,
+              error
+            }
+          })
+        })
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+  
+      if ( !user || args.password !== 'secret' ) {
+        throw new GraphQLError('Wrong credentials', {
+          extensions: {
+            code: 'BAD_USER_INPUT'
+          }
+        })        
+      }
+  
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      }
+  
+      return { value: jwt.sign(userForToken, process.env.SECRET) }
+    },
   }
 }
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers,
+  resolvers
 })
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(
+        auth.substring(7), process.env.SECRET
+      )
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  }
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
