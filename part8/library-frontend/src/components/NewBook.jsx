@@ -10,6 +10,9 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  /* Not only the list of books is updated but also the authors one as a new author is
+  /* created if it not exists when a book is added
+  */
   const [ addBook ] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
   })
