@@ -5,6 +5,7 @@ import { ALL_AUTHORS } from "../queries"
 
 const Authors = (props) => {
   const authors = useQuery(ALL_AUTHORS)
+  const token = localStorage.getItem('phonenumbers-user-token')
 
   if (!props.show) {
     return null
@@ -35,7 +36,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <BirthyearForm authors={authors.data.allAuthors} />
+      { token ? (<BirthyearForm authors={authors.data.allAuthors} />) : null }
     </div>
   )
 }
