@@ -1,11 +1,17 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react"
-import { useQuery } from "@apollo/client"
-import { ALL_BOOKS } from "../queries"
+import { useState, useEffect } from "react"
+import { useQuery, useApolloClient } from "@apollo/client"
+import { ALL_BOOKS, ALL_BOOKS_BY_GENRE } from "../queries"
 
 const Books = (props) => {
-  const [genre, setGenre] = useState('all')
   const books = useQuery(ALL_BOOKS)
+  const client = useApolloClient()
+  const [filteredBooks, setFilteredBooks] = useState([])
+
+  useEffect(() => {
+    setFilteredBooks(books.data.allBooks)
+  }, [books.data.allBooks])
+
   if (!props.show) {
     return null
   }
@@ -21,11 +27,20 @@ const Books = (props) => {
     genres = genres.union(new Set(book.genres))
   })
 
-  const filteredBooks = books.data.allBooks.filter(book => {
-    return genre === 'all'
-      ? true
-      : book.genres.includes(genre)
-  })
+  const searchByGenre = (genre) => {
+    client.query({
+      query: ALL_BOOKS_BY_GENRE,
+      variables: { genre }
+    }).then(result => setFilteredBooks(result.data.allBooks))
+  }
+
+  const searchAll = () => {
+    client.query({
+      query: ALL_BOOKS
+    }).then(result => setFilteredBooks(result.data.allBooks))
+  }
+
+  console.log(filteredBooks);
 
   return (
     <div>
@@ -49,8 +64,8 @@ const Books = (props) => {
       </table>
 
       <div>
-        {Array.from(genres).map(genre => (<button key={genre} onClick={() => setGenre(genre)}>{genre}</button>))}
-        <button onClick={() => setGenre('all')}>all genres</button>
+        {Array.from(genres).map(genre => (<button key={genre} onClick={() => searchByGenre(genre)}>{genre}</button>))}
+        <button onClick={searchAll}>all genres</button>
       </div>
     </div>
   )
