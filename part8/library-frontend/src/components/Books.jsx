@@ -9,8 +9,8 @@ const Books = (props) => {
   const [filteredBooks, setFilteredBooks] = useState([])
 
   useEffect(() => {
-    setFilteredBooks(books.data.allBooks)
-  }, [books.data.allBooks])
+    setFilteredBooks(books.data?.allBooks)
+  }, [books.data?.allBooks])
 
   if (!props.show) {
     return null
