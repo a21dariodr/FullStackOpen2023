@@ -20,7 +20,14 @@ const resolvers = {
     }
   },
   Query: {
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      let authors = await Author.find({})
+      authors = authors.map((author) => {
+        author.bookCount = author.books.length
+        return author
+      })
+      return authors
+    },
     allBooks: async (root, args) => {
       if (!args.author && !args.genre) return Book.find({})
       if (args.author && !args.genre) {
@@ -73,8 +80,9 @@ const resolvers = {
       const newBook = new Book({ ...args })
 
       const author = await Author.findOne({ name: args.author })
+      let newAuthor
       if (!author) {
-        const newAuthor = new Author({
+        newAuthor = new Author({
           name: args.author
         })
 
@@ -97,6 +105,14 @@ const resolvers = {
 
       try {
         await newBook.save()
+        if (author) {
+          author.books = author.books.concat(newBook)
+          await author.save()
+        }
+        else {
+          newAuthor.books = newAuthor.books.concat(newBook)
+          await newAuthor.save()
+        }
       } catch(error) {
         throw new GraphQLError('Adding new book failed', {
           extensions: {

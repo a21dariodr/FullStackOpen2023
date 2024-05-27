@@ -7,7 +7,7 @@ import Login from "./components/Login"
 import Recommend from "./components/Reccomend"
 import { BOOK_ADDED, ALL_BOOKS } from "./queries"
 
-export const updateCache = (cache, query, addedBook) => {
+const updateCache = (cache, query, addedBook) => {
   const includedIn = (collection, object) => collection.map(o => o.id).includes(object.id)
 
   cache.updateQuery(query, ({ allBooks }) => {
