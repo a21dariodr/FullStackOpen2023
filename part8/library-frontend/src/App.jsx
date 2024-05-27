@@ -5,7 +5,19 @@ import Books from "./components/Books"
 import NewBook from "./components/NewBook"
 import Login from "./components/Login"
 import Recommend from "./components/Reccomend"
-import { BOOK_ADDED } from "./queries"
+import { BOOK_ADDED, ALL_BOOKS } from "./queries"
+
+export const updateCache = (cache, query, addedBook) => {
+  const includedIn = (collection, object) => collection.map(o => o.id).includes(object.id)
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: includedIn(allBooks, addedBook)
+        ? allBooks
+        : allBooks.concat(addedBook)
+    }
+  })
+}
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -15,7 +27,9 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      window.alert(`New book "${data.data.bookAdded.title}" by ${data.data.bookAdded.author.name} added`)
+      const bookAdded = data.data.bookAdded
+      updateCache(client.cache, { query: ALL_BOOKS }, bookAdded)
+      window.alert(`New book "${bookAdded.title}" by ${bookAdded.author.name} added`)
     }
   })
 
