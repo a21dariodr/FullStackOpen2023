@@ -12,7 +12,7 @@ const BirthyearForm = ({ authors }) => {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
-  const selectOptions = authors.map(author => {
+  const selectOptions = authors?.map(author => {
     return { value: author.name, label: author.name }
   })
 

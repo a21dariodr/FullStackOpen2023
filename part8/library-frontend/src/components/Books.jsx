@@ -23,7 +23,7 @@ const Books = (props) => {
   )
 
   let genres = new Set([])
-  books.data.allBooks.forEach(book => {
+  books.data?.allBooks.forEach(book => {
     genres = genres.union(new Set(book.genres))
   })
 
@@ -31,13 +31,13 @@ const Books = (props) => {
     client.query({
       query: ALL_BOOKS_BY_GENRE,
       variables: { genre }
-    }).then(result => setFilteredBooks(result.data.allBooks))
+    }).then(result => setFilteredBooks(result.data?.allBooks))
   }
 
   const searchAll = () => {
     client.query({
       query: ALL_BOOKS
-    }).then(result => setFilteredBooks(result.data.allBooks))
+    }).then(result => setFilteredBooks(result.data?.allBooks))
   }
 
   console.log(filteredBooks);
@@ -53,7 +53,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {filteredBooks?.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>

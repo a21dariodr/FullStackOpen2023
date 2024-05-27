@@ -4,7 +4,7 @@ import { ALL_BOOKS, CURRENT_USER } from "../queries"
 
 const Recommend = ({ show }) => {
   const books = useQuery(ALL_BOOKS)
-  const loggedUser = useQuery(CURRENT_USER)
+  const loggedUser = useQuery(CURRENT_USER, { fetchPolicy: 'no-cache' })
 
   if (!show) {
     return null
