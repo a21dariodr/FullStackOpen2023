@@ -98,3 +98,15 @@ mutation {
     value
   }
 }
+
+subscription BookAdded {
+  bookAdded {
+    title 
+    author {
+      name
+      born
+    }
+    published 
+    genres
+  }
+}
