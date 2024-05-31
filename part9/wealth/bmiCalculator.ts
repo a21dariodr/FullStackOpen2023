@@ -6,4 +6,19 @@ const calculateBmi = (height: number, weight: number): string => {
   else return bmi.toFixed(2) + ' Obesity (dangerous weight)'
 }
 
-console.log(calculateBmi(180, 74))
+if (process.argv.length < 4) throw new Error('Not enough arguments');
+if (process.argv.length > 4) throw new Error('Too many arguments');
+
+const height: number = Number(process.argv[2])
+const weight: number = Number(process.argv[3])
+if (isNaN(height) || isNaN(weight)) throw new Error('Provided values were not numbers!');
+
+try {
+  console.log(calculateBmi(height, weight))
+} catch (error: unknown) {
+  let errorMessage = 'Error when calculating BMI. '
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
+}
