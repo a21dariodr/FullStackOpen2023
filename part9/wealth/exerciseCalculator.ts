@@ -1,4 +1,4 @@
-interface Exercise {
+export interface ExercisesResult {
   periodLength: number;
   trainingDays: number;
   success: boolean;
@@ -12,7 +12,12 @@ type ratings = {
   description: string
 };
 
-const calculateExercises = (exerciseHours: number[], target: number): Exercise => {
+type exerciseParams = {
+  target: number,
+  dailyHours: number[]
+};
+
+const calculateExercises = (exerciseHours: number[], target: number): ExercisesResult => {
   const trainingDays: number = exerciseHours.reduce((totalDays, hours): number => {
     if (hours > 0) return ++totalDays;
     return totalDays;
@@ -42,19 +47,24 @@ const calculateExercises = (exerciseHours: number[], target: number): Exercise =
   };
 };
 
-if (process.argv.length < 4) throw new Error('Not enough arguments');
+const parseArgs = (args: string[]): exerciseParams => {
+  if (args.length < 4) throw new Error('Not enough arguments');
 
-const target: number = Number(process.argv[2]);
-if (isNaN(target)) throw new Error('The provided target is not a number!');
+  const target: number = Number(args[2]);
+  if (isNaN(target)) throw new Error('The provided target is not a number!');
 
-const dailyHoursArgs: string[] = process.argv.slice(3);
-const dailyHours: number[] = dailyHoursArgs.map(dailyHour => {
-  const hour = Number(dailyHour);
-  if (isNaN(hour)) throw new Error('Provided value is not a number!');
-  return hour;
-});
+  const dailyHoursArgs: string[] = args.slice(3);
+  const dailyHours: number[] = dailyHoursArgs.map(dailyHour => {
+    const hour = Number(dailyHour);
+    if (isNaN(hour)) throw new Error('Provided value is not a number!');
+    return hour;
+  });
+
+  return { target, dailyHours };
+};
 
 try {
+  const { target, dailyHours } = parseArgs(process.argv);
   console.log(calculateExercises(dailyHours, target));
 } catch (error: unknown) {
   let errorMessage = 'Error when calculating exercise metrics. ';
@@ -63,3 +73,5 @@ try {
   }
   console.log(errorMessage);
 }
+
+export default calculateExercises;

@@ -7,3 +7,32 @@ GET http://localhost:3003/bmi?height=180&weight=72
 ###
 
 GET http://localhost:3003/bmi?height=180
+
+###
+
+POST http://localhost:3003/exercises
+content-type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+  "target": 2.5
+}
+
+###
+
+POST http://localhost:3003/exercises
+content-type: application/json
+
+{
+  "target": 2.5
+}
+
+###
+
+POST http://localhost:3003/exercises
+content-type: application/json
+
+{
+  "daily_exercises": [1, "error", 2, 0, 3, 0, 2.5],
+  "target": 2.5
+}
