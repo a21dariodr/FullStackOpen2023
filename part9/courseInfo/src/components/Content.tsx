@@ -1,9 +1,5 @@
 import Part from "./Part";
-
-export interface CoursePart {
-  name: string;
-  exerciseCount: number;
-}
+import CoursePart from "../types/coursePartsTypes";
 
 type Props = {
   courseParts: CoursePart[];
