@@ -1,3 +1,5 @@
+import Part from "./Part";
+
 export interface CoursePart {
   name: string;
   exerciseCount: number;
@@ -12,9 +14,7 @@ const Content = (props: Props) => {
     <>
       {props.courseParts.map(coursePart => {
         return (
-          <p key={coursePart.name}>
-            {coursePart.name} {coursePart.exerciseCount}
-          </p>
+          <Part key={coursePart.name} part={coursePart} />
         )
       })}
     </>
