@@ -2,12 +2,14 @@
 import { useState } from "react";
 import diaryService from '../services/entriesService';
 import { DiaryEntry as Entry, Visibility, Weather } from "../types/entriesTypes";
+import { AxiosError } from "axios";
 
 const AddDiaryForm = ({ entries, setEntries }: { entries: Entry[], setEntries: Function }) => {
   const [date, setDate] = useState<string>('')
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Good)
   const [weather, setWeather] = useState<Weather>(Weather.Sunny)
   const [comment, setComment] = useState<string>('')
+  const [error, setError] = useState<string>('')
 
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -16,12 +18,18 @@ const AddDiaryForm = ({ entries, setEntries }: { entries: Entry[], setEntries: F
         setEntries(entries.concat(entry));
         setDate('');
         setComment('');
+      })
+      .catch((error: Error) => {
+        if (error instanceof AxiosError) setError(error.response?.data);
       });
   }
 
   return (
     <>
       <h1>Add new entry</h1>
+      <p style={{ color: 'red' }}>
+        {error}
+      </p>
       <form onSubmit={onSubmit}>
         date <input type="text" value={date} onChange={(e) => setDate(e.target.value)} /><br/>
         visibility <input type="text" value={visibility} onChange={(e) => setVisibility(e.target.value as Visibility)} /><br/>
