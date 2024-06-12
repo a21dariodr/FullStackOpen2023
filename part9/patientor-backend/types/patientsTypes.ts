@@ -1,6 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Entry {
-}
+import { Entry } from "./entries";
 
 export interface Patient {
   id: string;

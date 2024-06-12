@@ -15,10 +15,8 @@ const getPatientsWithoutSsn = (): NonSensitivePatient[] => {
   });
 };
 
-const getPatientWithoutSsn = (id: string): NonSensitivePatient | undefined => {
-  const patient = patients.find(p => p.id === id);
-  if (patient) patient.entries = [];
-  return patient;
+const getPatient = (id: string): NonSensitivePatient | undefined => {
+  return patients.find(p => p.id === id);
 };
 
 const addPatient = (patient: NewPatient): Patient => {
@@ -34,5 +32,5 @@ const addPatient = (patient: NewPatient): Patient => {
 
 export default {
   addPatient,
-  getPatientsWithoutSsn, getPatientWithoutSsn
+  getPatientsWithoutSsn, getPatientWithoutSsn: getPatient
 };
