@@ -3,9 +3,11 @@ import { useMatch } from 'react-router-dom';
 import { Patient, Diagnosis } from "../../types";
 import patientService from "../../services/patients";
 
+import EntryDetails from "./EntriesDetails/EntryDetails";
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import WcIcon from '@mui/icons-material/Wc';
+import { Button } from "@mui/material";
 
 interface Props {
   diagnoses : Diagnosis[]
@@ -22,10 +24,6 @@ const PatientDetails = ({ diagnoses}: Props) => {
       );
     }
   }, [patientId]);
-
-  const getDiagnosisName = (code: string): string | undefined => {
-    return diagnoses.find(d => d.code === code)?.name;
-  };
 
   if (!patient) return null;
 
@@ -44,16 +42,14 @@ const PatientDetails = ({ diagnoses}: Props) => {
       <p>Ssh: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
       <h3>Entries</h3>
-      {patient.entries.map(entry => (
-        <div key={entry.id}>
-          <p>{entry.date} <em>{entry.description}</em></p>
-          <ul>
-            {entry.diagnosisCodes?.map(d => (
-              <li key={d}>{d} {getDiagnosisName(d)}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      {patient.entries.map(entry =>
+        <EntryDetails entry={entry} diagnoses={diagnoses} key={entry.id} />
+      )}
+      <div>
+        <Button variant="contained" onClick={() => null}>
+          Add New Entry
+        </Button>
+      </div>
     </div>
   );
 };
