@@ -1,4 +1,4 @@
-import { Entry } from "./entries";
+import { Entry } from "./entriesTypes";
 
 export interface Patient {
   id: string;
