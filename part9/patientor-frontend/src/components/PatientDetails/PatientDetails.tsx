@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useMatch } from 'react-router-dom';
-import { Patient, Diagnosis } from "../../types";
+import { Patient, Diagnosis, EntryWithoutId, Entry } from '../../types';
 import patientService from "../../services/patients";
+import AddEntryForm from "./AddEntryForm";
 
 import EntryDetails from "./EntriesDetails/EntryDetails";
 import MaleIcon from '@mui/icons-material/Male';
@@ -13,7 +14,8 @@ interface Props {
   diagnoses : Diagnosis[]
 }
 
-const PatientDetails = ({ diagnoses}: Props) => {
+const PatientDetails = ({ diagnoses }: Props) => {
+  const [showForm, setShowForm] = useState(false);
   const [patient, setPatient] = useState<Patient>();
   const patientId = useMatch('/patients/:id')?.params.id;
 
@@ -24,6 +26,18 @@ const PatientDetails = ({ diagnoses}: Props) => {
       );
     }
   }, [patientId]);
+
+  const onCancel = () => setShowForm(false);
+
+  const onSubmit = async (entry: EntryWithoutId) => {
+    if (patientId && patient) {
+      const newEntry = await patientService.addEntry(entry, patientId);
+      setPatient({
+        ...patient,
+        entries: patient.entries.concat(newEntry as Entry)
+      });
+    }
+  };
 
   if (!patient) return null;
 
@@ -41,15 +55,21 @@ const PatientDetails = ({ diagnoses}: Props) => {
       </h2>
       <p>Ssh: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
+      {showForm ? <AddEntryForm onSubmit={onSubmit} onCancel={onCancel} diagnoses={diagnoses}/> : ''}
       <h3>Entries</h3>
       {patient.entries.map(entry =>
         <EntryDetails entry={entry} diagnoses={diagnoses} key={entry.id} />
       )}
-      <div>
-        <Button variant="contained" onClick={() => null}>
-          Add New Entry
-        </Button>
-      </div>
+      {!showForm
+        ? (
+          <div>
+            <Button variant="contained" onClick={() => setShowForm(true)}>
+              Add New Entry
+            </Button>
+          </div>
+          )
+        : ''
+      }
     </div>
   );
 };

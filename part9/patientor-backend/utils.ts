@@ -36,7 +36,7 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
         description: parseDescription(object.description),
         date: parseDate(object.date),
         specialist: parseSpecialist(object.specialist),
-        diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
+        diagnosisCodes: parseDiagnosisCodes(object),
       } : {
         description: parseDescription(object.description),
         date: parseDate(object.date),
@@ -53,11 +53,11 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
           };
           return newHealthCheck;
         case "OccupationalHealthcare":
-          if (!('employer' in object)) throw new Error("Employer name missing");
+          if (!('employerName' in object)) throw new Error("Employer name missing");
           const newOccupationalEntry: OccupationalHealthcareEntryWithoutId = {
             ...baseEntry,
             type: "OccupationalHealthcare",
-            employerName: parseEmployerName(object.employer),
+            employerName: parseEmployerName(object.employerName),
           };
           if ('sickLeave' in object) newOccupationalEntry.sickLeave = parseSickLeave(object.sickLeave);
           return newOccupationalEntry;
@@ -139,20 +139,20 @@ const parseDiagnosisCodes = (object: unknown): Array<Diagnosis['code']> =>  {
 };
 
 const isRating = (param: unknown): param is HealthCheckRating => {
-  if (!isString(param)) return false;
-  return Object.values(HealthCheckRating).includes(param);
+  if (![0, 1, 2, 3].includes(Number(param))) return false;
+  return true;
 };
 
 const parseRating = (rating: unknown): HealthCheckRating => {
   if (!rating || !isRating(rating)) {
-    throw new Error('HealthCheckRating missing or incorrect value' + rating);
+    throw new Error('HealthCheckRating missing or incorrect value ' + rating);
   }
   return rating;
 };
 
 const parseEmployerName = (employer: unknown): string => {
   if (!employer || !isString(employer)) {
-    throw new Error('Employer missing or incorrect' + employer);
+    throw new Error('Employer missing or incorrect ' + employer);
   }
   return employer;
 };
