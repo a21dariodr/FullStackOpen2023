@@ -1,4 +1,6 @@
-import { Button, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { 
+  Button, InputLabel, MenuItem, Select, SelectChangeEvent, TextField
+} from "@mui/material";
 import React, { useState } from "react";
 import { Diagnosis, EntryWithoutId } from "../../types";
 
