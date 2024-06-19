@@ -31,18 +31,17 @@ v20.11.0
 
 **NOTE** The port 5000 might be reserved in new macOS versions. If you see this error
 
-``` 
+```
 Error: listen EADDRINUSE: address already in use :::5000
 ```
 
 define an alternative port in file .env. You may eg. pick 5001:
 
-``` 
+```
 PORT=5001
 ```
 
 Change also the Authorization callback URL [here](https://github.com/settings/developers) to have the new port value.
-
 
 ## 🔑 Authentication
 
