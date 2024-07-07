@@ -7,3 +7,6 @@
 [submodule "phonebook_cicd"]
 	path = part11/fullstackopen-CICD-phonebook
 	url = https://github.com/a21dariodr/fullstackopen-CICD-phonebook.git
+[submodule "part12/part12-containers-applications"]
+	path = part12/part12-containers-applications
+	url = https://github.com/a21dariodr/part12-containers-applications.git
