@@ -4,3 +4,6 @@
 [submodule "part11/full-stack-open-pokedex"]
 	path = part11/full-stack-open-pokedex
 	url = https://github.com/a21dariodr/full-stack-open-pokedex
+[submodule "phonebook_cicd"]
+	path = part11/fullstackopen-CICD-phonebook
+	url = https://github.com/a21dariodr/fullstackopen-CICD-phonebook.git
