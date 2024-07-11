@@ -10,3 +10,6 @@
 [submodule "part12/part12-containers-applications"]
 	path = part12/part12-containers-applications
 	url = https://github.com/a21dariodr/part12-containers-applications.git
+[submodule "part13/fullstackopen-part13-relational-dbs"]
+	path = part13/fullstackopen-part13-relational-dbs
+	url = https://github.com/a21dariodr/fullstackopen-part13-relational-dbs
